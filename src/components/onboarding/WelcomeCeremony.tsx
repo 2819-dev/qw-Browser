@@ -20,14 +20,14 @@ export function WelcomeCeremony() {
     if (!ctx) return
 
     const grad = ctx.createLinearGradient(0, 0, 840, 840)
-    grad.addColorStop(0, '#0A84FF')
-    grad.addColorStop(1, '#5E5CE6')
+    grad.addColorStop(0, '#111113')
+    grad.addColorStop(1, '#2c2c2e')
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, 840, 840)
 
-    ctx.fillStyle = 'rgba(255,255,255,0.92)'
+    ctx.fillStyle = 'rgba(255,255,255,0.96)'
     ctx.beginPath()
-    ctx.roundRect(90, 90, 660, 660, 96)
+    ctx.roundRect(90, 90, 660, 660, 72)
     ctx.fill()
 
     ctx.fillStyle = '#0b0b0f'
@@ -35,7 +35,7 @@ export function WelcomeCeremony() {
     ctx.textAlign = 'center'
     ctx.fillText('qw.', 420, 360)
 
-    ctx.fillStyle = '#007AFF'
+    ctx.fillStyle = '#1c1c1e'
     ctx.font = '600 42px -apple-system, BlinkMacSystemFont, sans-serif'
     ctx.fillText('Welcome badge', 420, 450)
 

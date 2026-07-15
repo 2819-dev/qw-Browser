@@ -8,6 +8,7 @@ import {
   WALLPAPER_META,
   ICON_FAMILIES,
   VISUAL_STYLES,
+  UI_FONTS,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -17,13 +18,15 @@ import {
   type ThemeMode,
   type IconVariant,
   type VisualStyle,
+  type UiFont,
 } from '../../types/customization'
 
 const GUIDE_STEPS = [
-  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass, Classic, or Cyber.' },
+  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass & Classic stay quiet. Cyber is neon color.' },
+  { id: 'font', title: 'Default font', blurb: 'Pick the typeface for the whole chrome.' },
   { id: 'icon', title: 'App icon', blurb: 'Pick a style — light and dark versions swap with your theme.' },
   { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and blur intensity.' },
-  { id: 'accent', title: 'Accent color', blurb: 'Tint buttons, badges, and highlights.' },
+  { id: 'accent', title: 'Accent', blurb: 'Mono keeps black & white. Color accents are optional — Cyber loves them.' },
   { id: 'layout', title: 'Where things go', blurb: 'Scroll options and preview the real layout.' },
   { id: 'searchbar', title: 'Search bar shape', blurb: 'Capsule, pill, rounded, or square.' },
   { id: 'controls', title: 'Visible buttons', blurb: 'Show only the buttons you use.' },
@@ -47,6 +50,7 @@ export function FullCustomizationGuide() {
   const setLoadingIcon = useQwStore((s) => s.setLoadingIcon)
   const setAppIcon = useQwStore((s) => s.setAppIcon)
   const setVisualStyle = useQwStore((s) => s.setVisualStyle)
+  const setUiFont = useQwStore((s) => s.setUiFont)
   const setStartPageContent = useQwStore((s) => s.setStartPageContent)
   const setControl = useQwStore((s) => s.setControl)
   const setSetting = useQwStore((s) => s.setSetting)
@@ -104,6 +108,23 @@ export function FullCustomizationGuide() {
                 <strong>{VISUAL_STYLES[key].title}</strong>
                 <span>{VISUAL_STYLES[key].subtitle}</span>
               </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'font' && (
+        <div className="font-pick-list">
+          {(Object.keys(UI_FONTS) as UiFont[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={clsx('font-pick-card', settings.uiFont === key && 'selected')}
+              onClick={() => setUiFont(key)}
+              style={{ fontFamily: UI_FONTS[key].stack }}
+            >
+              <strong>Aa — {UI_FONTS[key].title}</strong>
+              <span>{UI_FONTS[key].subtitle}</span>
             </button>
           ))}
         </div>

@@ -11,7 +11,9 @@ Core design: clean, minimal **Apple Liquid Glass** — sharp frosted refraction,
 | Minimal onboarding | Done | Welcome → Look → Place → Guide |
 | Visual styles | Done | Liquid Glass / Classic / Cyber — must read differently |
 | Layout picker + live preview | Done | Bottom / top / split / floating, etc. |
-| Interactive feature tour | Done | Highlights controls; Tabs & Settings require a tap |
+| Interactive feature tour | Done | Search → site nav → tabs → settings → optional full guide |
+| Default UI font | Done | System / Rounded / Serif / Mono / Condensed / Cyber |
+| Quiet B&W chrome | Done | Color reserved for Cyber (+ optional accents) |
 | Welcome badge + XP | Done | Finish tour → animation → saveable badge |
 | Achievements foundation | Done | Welcome, First Search, Customizer, Tab Hopper, Explorer I/II |
 

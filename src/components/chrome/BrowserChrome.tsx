@@ -112,6 +112,7 @@ export function SearchBar({
 export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
   const tab = useQwStore((s) => s.activeTab())
   const settings = useQwStore((s) => s.settings)
+  const showTour = useQwStore((s) => s.showTour)
   const c = settings.controls
   const goBack = useQwStore((s) => s.goBack)
   const goForward = useQwStore((s) => s.goForward)
@@ -132,13 +133,19 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
       style={inBlob ? undefined : { padding: '6px 8px' }}
     >
       {c.back && (
-        <GlassButton aria-label="Back" disabled={!tab.canGoBack} onClick={press(goBack)}>
+        <GlassButton
+          aria-label="Back"
+          data-tour="tour-back"
+          disabled={!tab.canGoBack && !showTour}
+          onClick={press(goBack)}
+        >
           <ArrowLeft size={20} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.forward && (
         <GlassButton
           aria-label="Forward"
+          data-tour="tour-forward"
           disabled={!tab.canGoForward}
           onClick={press(goForward)}
         >
@@ -146,12 +153,12 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
         </GlassButton>
       )}
       {c.reload && (
-        <GlassButton aria-label="Reload" onClick={press(reload)}>
+        <GlassButton aria-label="Reload" data-tour="tour-reload" onClick={press(reload)}>
           <RotateCw size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.home && (
-        <GlassButton aria-label="Home" onClick={press(goHome)}>
+        <GlassButton aria-label="Home" data-tour="tour-home" onClick={press(goHome)}>
           <Home size={18} strokeWidth={2.1} />
         </GlassButton>
       )}

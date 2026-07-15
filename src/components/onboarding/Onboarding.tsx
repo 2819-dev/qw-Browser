@@ -35,7 +35,7 @@ export function Onboarding() {
           <>
             <div className="onboarding-hero tight">
               <h1>Choose a look</h1>
-              <p>Liquid Glass frosts what’s behind it. Classic stays solid and sharp. Cyber is neon.</p>
+              <p>Liquid Glass frosts quietly in black & white. Classic is solid. Cyber goes neon — fonts, color, everything.</p>
             </div>
             <div className="style-pick-list">
               {STYLE_OPTIONS.map((key) => (

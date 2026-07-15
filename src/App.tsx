@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ACCENT_COLORS, resolveIconSrc } from './types/customization'
+import { resolveAccent, resolveIconSrc, UI_FONTS } from './types/customization'
 import { useQwStore } from './store/qwStore'
 import { BrowserChrome } from './components/chrome/BrowserChrome'
 import { BrowserView } from './components/chrome/BrowserView'
@@ -89,6 +89,7 @@ export default function App() {
   useFullscreenShell()
 
   const settings = useQwStore((s) => s.settings)
+  const theme = useQwStore((s) => s.resolvedTheme)
   const showOnboarding = useQwStore((s) => s.showOnboarding)
   const showTour = useQwStore((s) => s.showTour)
   const showWelcome = useQwStore((s) => s.showWelcome)
@@ -97,18 +98,26 @@ export default function App() {
   const showFullGuide = useQwStore((s) => s.showFullGuide)
 
   useEffect(() => {
-    const accent =
-      settings.visualStyle === 'cyber' && settings.accent === 'mono'
-        ? '#00F0FF'
-        : ACCENT_COLORS[settings.accent]
+    const accent = resolveAccent(settings.accent, settings.visualStyle, theme)
     document.documentElement.style.setProperty('--qw-accent', accent)
     document.documentElement.style.setProperty(
       '--qw-accent-soft',
-      `color-mix(in srgb, ${accent} 18%, transparent)`,
+      `color-mix(in srgb, ${accent} 14%, transparent)`,
     )
     document.documentElement.dataset.glass = settings.glassIntensity
     document.documentElement.dataset.style = settings.visualStyle
-  }, [settings.accent, settings.glassIntensity, settings.visualStyle])
+    document.documentElement.dataset.font = settings.uiFont
+    document.documentElement.style.setProperty(
+      '--qw-font',
+      UI_FONTS[settings.uiFont]?.stack ?? UI_FONTS.system.stack,
+    )
+  }, [
+    settings.accent,
+    settings.glassIntensity,
+    settings.visualStyle,
+    settings.uiFont,
+    theme,
+  ])
 
   return (
     <div className="qw-app">
@@ -121,7 +130,7 @@ export default function App() {
           {showTabs && <TabsSheet />}
           {showFullGuide && <FullCustomizationGuide />}
           {showOnboarding && <Onboarding />}
-          {showTour && !showOnboarding && <FeatureTour />}
+          {showTour && !showOnboarding && !showFullGuide && <FeatureTour />}
           {showWelcome && <WelcomeCeremony />}
         </div>
       </div>

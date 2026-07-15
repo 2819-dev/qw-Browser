@@ -16,6 +16,7 @@ import {
   type StartPageContent,
   type ControlSet,
   type AchievementId,
+  type UiFont,
   ACHIEVEMENTS,
 } from '../types/customization'
 
@@ -55,6 +56,7 @@ type BrowserState = {
   setSearchBarStyle: (style: SearchBarStyle) => void
   setGlassIntensity: (intensity: GlassIntensity) => void
   setVisualStyle: (style: VisualStyle) => void
+  setUiFont: (font: UiFont) => void
   setAppIcon: (variant: IconVariant) => void
   setStartPageContent: (content: StartPageContent) => void
   setControl: (key: keyof ControlSet, value: boolean) => void
@@ -170,7 +172,20 @@ export const useQwStore = create<BrowserState>()(
         set((s) => ({ settings: { ...s.settings, glassIntensity } })),
 
       setVisualStyle: (visualStyle) =>
-        set((s) => ({ settings: { ...s.settings, visualStyle } })),
+        set((s) => {
+          let uiFont = s.settings.uiFont
+          if (
+            visualStyle === 'cyber' &&
+            (uiFont === 'system' || uiFont === 'rounded')
+          ) {
+            uiFont = 'cyber'
+          } else if (visualStyle !== 'cyber' && uiFont === 'cyber') {
+            uiFont = 'system'
+          }
+          return { settings: { ...s.settings, visualStyle, uiFont } }
+        }),
+
+      setUiFont: (uiFont) => set((s) => ({ settings: { ...s.settings, uiFont } })),
 
       setAppIcon: (appIcon) => set((s) => ({ settings: { ...s.settings, appIcon } })),
 
@@ -404,7 +419,7 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v4',
+      name: 'qw-browser-v5',
       partialize: (s) => ({
         settings: s.settings,
       }),
@@ -413,6 +428,12 @@ export const useQwStore = create<BrowserState>()(
           state.settings.appIcon = normalizeIconVariant(state.settings.appIcon)
           if (!state.settings.visualStyle) {
             state.settings.visualStyle = 'liquid-glass'
+          }
+          if (!state.settings.uiFont) {
+            state.settings.uiFont = 'system'
+          }
+          if (!state.settings.accent) {
+            state.settings.accent = 'mono'
           }
           state.settings.unlockedAchievements ??= []
           state.settings.sitesVisited ??= 0

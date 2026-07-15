@@ -16,13 +16,57 @@ export type GlassIntensity = 'subtle' | 'medium' | 'strong'
 /** Overall UI look */
 export type VisualStyle = 'liquid-glass' | 'classic' | 'cyber'
 
+/** Default UI typeface */
+export type UiFont =
+  | 'system'
+  | 'rounded'
+  | 'serif'
+  | 'mono'
+  | 'condensed'
+  | 'cyber'
+
+export const UI_FONTS: Record<UiFont, { title: string; subtitle: string; stack: string }> = {
+  system: {
+    title: 'System',
+    subtitle: 'SF Pro — clean Apple default',
+    stack:
+      "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Helvetica, Arial, sans-serif",
+  },
+  rounded: {
+    title: 'Rounded',
+    subtitle: 'Soft, friendly letterforms',
+    stack:
+      "'SF Pro Rounded', ui-rounded, 'Hiragino Maru Gothic ProN', 'Segoe UI', Helvetica, sans-serif",
+  },
+  serif: {
+    title: 'Serif',
+    subtitle: 'Editorial New York / Georgia',
+    stack: "'New York', 'Iowan Old Style', 'Times New Roman', Georgia, serif",
+  },
+  mono: {
+    title: 'Mono',
+    subtitle: 'Technical SF Mono',
+    stack: "'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace",
+  },
+  condensed: {
+    title: 'Condensed',
+    subtitle: 'Tight, modern display',
+    stack: "'Avenir Next Condensed', 'Arial Narrow', 'Helvetica Neue', Helvetica, sans-serif",
+  },
+  cyber: {
+    title: 'Cyber',
+    subtitle: 'Terminal / neon mono',
+    stack: "'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace",
+  },
+}
+
 export const VISUAL_STYLES: Record<
   VisualStyle,
   { title: string; subtitle: string }
 > = {
   'liquid-glass': {
     title: 'Liquid Glass',
-    subtitle: 'Frosted refraction — real Apple-like glass',
+    subtitle: 'Frosted glass — black & white, Apple quiet',
   },
   classic: {
     title: 'Classic',
@@ -30,7 +74,7 @@ export const VISUAL_STYLES: Record<
   },
   cyber: {
     title: 'Cyber',
-    subtitle: 'Neon gamer energy',
+    subtitle: 'Neon, mono font, scanlines — full color',
   },
 }
 
@@ -177,6 +221,7 @@ export type QwSettings = {
 
   themeMode: ThemeMode
   visualStyle: VisualStyle
+  uiFont: UiFont
   accent: AccentName
   glassIntensity: GlassIntensity
   reduceMotion: boolean
@@ -217,7 +262,8 @@ export const DEFAULT_SETTINGS: QwSettings = {
 
   themeMode: 'system',
   visualStyle: 'liquid-glass',
-  accent: 'blue',
+  uiFont: 'system',
+  accent: 'mono',
   glassIntensity: 'strong',
   reduceMotion: false,
   appIcon: 'classic',
@@ -265,7 +311,21 @@ export const ACCENT_COLORS: Record<AccentName, string> = {
   orange: '#FF9F0A',
   teal: '#64D2FF',
   green: '#30D158',
-  mono: '#8E8E93',
+  mono: '#1c1c1e',
+}
+
+/** Mono adapts to theme; cyber mono becomes neon */
+export function resolveAccent(
+  accent: AccentName,
+  visualStyle: VisualStyle,
+  theme: 'light' | 'dark',
+): string {
+  if (visualStyle === 'cyber') {
+    if (accent === 'mono') return '#00F0FF'
+    return ACCENT_COLORS[accent]
+  }
+  if (accent === 'mono') return theme === 'dark' ? '#f5f5f7' : '#1c1c1e'
+  return ACCENT_COLORS[accent]
 }
 
 export const LAYOUT_META: Record<

@@ -307,27 +307,27 @@ button {
   overflow: hidden;
 }
 
-/* Soft light behind glass so liquid glass actually reads */
+/* Soft light behind glass — grayscale for quiet Liquid Glass / Classic */
 .glass-atmosphere {
   pointer-events: none;
   position: absolute;
   inset: -20%;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 18% 8%, rgba(120, 170, 255, 0.32), transparent 42%),
-    radial-gradient(ellipse at 82% 18%, rgba(190, 150, 255, 0.22), transparent 40%),
-    radial-gradient(ellipse at 55% 92%, rgba(100, 210, 255, 0.18), transparent 44%),
-    radial-gradient(ellipse at 40% 45%, rgba(255, 255, 255, 0.12), transparent 35%);
-  opacity: 0.95;
+    radial-gradient(ellipse at 18% 8%, rgba(0, 0, 0, 0.06), transparent 42%),
+    radial-gradient(ellipse at 82% 18%, rgba(0, 0, 0, 0.04), transparent 40%),
+    radial-gradient(ellipse at 55% 92%, rgba(0, 0, 0, 0.05), transparent 44%),
+    radial-gradient(ellipse at 40% 45%, rgba(255, 255, 255, 0.35), transparent 35%);
+  opacity: 0.9;
   animation: atmosphere-drift 18s ease-in-out infinite alternate;
 }
 
 [data-theme='dark'] .glass-atmosphere {
   background:
-    radial-gradient(ellipse at 18% 8%, rgba(70, 120, 220, 0.45), transparent 44%),
-    radial-gradient(ellipse at 86% 22%, rgba(130, 80, 220, 0.36), transparent 40%),
-    radial-gradient(ellipse at 40% 88%, rgba(40, 150, 210, 0.28), transparent 48%),
-    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.05), transparent 30%);
+    radial-gradient(ellipse at 18% 8%, rgba(255, 255, 255, 0.07), transparent 44%),
+    radial-gradient(ellipse at 86% 22%, rgba(255, 255, 255, 0.05), transparent 40%),
+    radial-gradient(ellipse at 40% 88%, rgba(255, 255, 255, 0.04), transparent 48%),
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.03), transparent 30%);
 }
 
 @keyframes atmosphere-drift {
@@ -794,10 +794,10 @@ button {
 .style-pick-swatch span:nth-child(3) { bottom: 10px; }
 
 .preview-liquid-glass .style-pick-swatch {
-  background: linear-gradient(145deg, #d8e6ff, #f0e8ff 50%, #e8f4ff);
+  background: linear-gradient(145deg, #e8e8ed, #f5f5f7 50%, #ffffff);
 }
 .preview-liquid-glass .style-pick-swatch span {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -816,6 +816,41 @@ button {
   border: 1px solid #00f0ff;
   box-shadow: 0 0 10px #00f0ff88;
   border-radius: 2px;
+}
+
+.font-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.font-pick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--qw-hairline);
+  background: color-mix(in srgb, var(--qw-bg-elevated) 70%, transparent);
+  text-align: left;
+}
+
+.font-pick-card.selected {
+  border-color: var(--qw-fg);
+  box-shadow: 0 0 0 1px var(--qw-fg);
+}
+
+.font-pick-card strong {
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  font-weight: 620;
+}
+
+.font-pick-card span {
+  font-size: 12px;
+  color: var(--qw-fg-secondary);
+  font-family: var(--qw-font);
 }
 
 .style-pick-copy {
@@ -1595,69 +1630,117 @@ button {
 
 [data-style='cyber'] {
   --qw-font: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
-  --qw-radius-blob: 10px;
-  --qw-radius-pill: 8px;
-  --qw-radius-card: 10px;
-  --qw-bg: #05060a;
-  --qw-bg-elevated: rgba(8, 16, 28, 0.72);
-  --qw-bg-elevated-strong: rgba(10, 22, 38, 0.82);
-  --qw-fg: #e8fbff;
-  --qw-fg-secondary: rgba(180, 240, 255, 0.7);
-  --qw-fg-tertiary: rgba(120, 200, 220, 0.45);
-  --qw-hairline: rgba(0, 255, 255, 0.18);
+  --qw-radius-blob: 6px;
+  --qw-radius-pill: 4px;
+  --qw-radius-card: 6px;
+  --qw-bg: #03050a;
+  --qw-bg-elevated: rgba(6, 14, 26, 0.78);
+  --qw-bg-elevated-strong: rgba(8, 20, 36, 0.9);
+  --qw-fg: #e6fbff;
+  --qw-fg-secondary: rgba(160, 240, 255, 0.72);
+  --qw-fg-tertiary: rgba(100, 200, 220, 0.45);
+  --qw-hairline: rgba(0, 255, 255, 0.22);
   --qw-accent: #00f0ff;
   --qw-accent-soft: rgba(0, 240, 255, 0.22);
-  --qw-glass-blur: 18px;
-  --qw-glass-sat: 160%;
-  --qw-glass-border: rgba(0, 255, 255, 0.35);
+  --qw-glass-blur: 14px;
+  --qw-glass-sat: 170%;
+  --qw-glass-bright: 1.15;
+  --qw-glass-border: rgba(0, 255, 255, 0.4);
   --qw-glass-highlight: linear-gradient(
     120deg,
-    rgba(0, 255, 255, 0.18),
-    rgba(255, 0, 170, 0.08) 45%,
+    rgba(0, 255, 255, 0.22),
+    rgba(255, 0, 170, 0.12) 45%,
     transparent 70%
   );
-  --qw-shadow: 0 0 0 1px rgba(0, 255, 255, 0.15), 0 0 28px rgba(0, 240, 255, 0.18),
-    0 12px 40px rgba(0, 0, 0, 0.55);
+  --qw-glass-specular: linear-gradient(
+    90deg,
+    rgba(0, 255, 255, 0.25),
+    transparent 40%,
+    rgba(255, 0, 170, 0.15)
+  );
+  --qw-glass-rim: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.8),
+    rgba(255, 0, 170, 0.35) 55%,
+    rgba(0, 255, 255, 0.45)
+  );
+  --qw-shadow: 0 0 0 1px rgba(0, 255, 255, 0.18), 0 0 28px rgba(0, 240, 255, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.02em;
 }
 
 [data-style='cyber'] .glass-atmosphere {
   background:
-    radial-gradient(ellipse at 15% 20%, rgba(0, 255, 255, 0.18), transparent 40%),
-    radial-gradient(ellipse at 85% 15%, rgba(255, 0, 170, 0.16), transparent 38%),
+    radial-gradient(ellipse at 15% 20%, rgba(0, 255, 255, 0.22), transparent 40%),
+    radial-gradient(ellipse at 85% 15%, rgba(255, 0, 170, 0.2), transparent 38%),
+    radial-gradient(ellipse at 50% 80%, rgba(0, 255, 140, 0.1), transparent 45%),
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 255, 255, 0.03) 3px
+      rgba(0, 255, 255, 0.035) 3px
     );
   opacity: 1;
+  animation: none;
 }
 
 [data-style='cyber'] .qw-app,
 [data-style='cyber'] .phone-frame,
 [data-style='cyber'] .onboarding {
-  background: #05060a;
+  background: #03050a;
 }
 
 [data-style='cyber'] .search-bar.style-capsule,
 [data-style='cyber'] .glass-pill,
 [data-style='cyber'] .glass-blob {
-  border-radius: 8px;
+  border-radius: 4px;
+}
+
+[data-style='cyber'] .glass {
+  text-transform: none;
+  border-style: solid;
+}
+
+[data-style='cyber'] .section-label,
+[data-style='cyber'] .onboarding-step-title,
+[data-style='cyber'] .https-badge {
+  font-family: var(--qw-font);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+[data-style='cyber'] .onboarding-hero h1,
+[data-style='cyber'] .sheet h2,
+[data-style='cyber'] .wordmark,
+[data-style='cyber'] .live-wordmark {
+  font-family: var(--qw-font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 [data-style='cyber'] .layout-chip.selected,
 [data-style='cyber'] .style-pick-card.selected,
 [data-style='cyber'] .icon-scroll-card.selected,
-[data-style='cyber'] .choice-card.selected {
+[data-style='cyber'] .choice-card.selected,
+[data-style='cyber'] .font-pick-card.selected {
   box-shadow: 0 0 0 1px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.35);
+  border-radius: 4px;
 }
 
 [data-style='cyber'] .onboarding-actions .primary,
-[data-style='cyber'] .glass-btn.accent {
+[data-style='cyber'] .glass-btn.accent,
+[data-style='cyber'] .tour-actions .primary,
+[data-style='cyber'] .welcome-actions .primary {
   background: linear-gradient(90deg, #00f0ff, #ff00aa);
-  color: #05060a;
+  color: #03050a;
   text-shadow: none;
   box-shadow: 0 0 24px rgba(0, 240, 255, 0.35);
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 13px;
 }
 
 [data-style='cyber'] .wordmark,
@@ -1668,6 +1751,19 @@ button {
 
 [data-style='cyber'] .https-badge {
   color: #ff00aa;
+}
+
+[data-style='cyber'] .search-bar input {
+  font-family: var(--qw-font);
+  letter-spacing: 0.04em;
+}
+
+[data-style='cyber'] .tour-hole {
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.62),
+    0 0 0 2px #00f0ff,
+    0 0 24px rgba(0, 240, 255, 0.55);
 }
 
 
@@ -1765,17 +1861,17 @@ button {
 .tour-dim {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.32);
   pointer-events: none;
 }
 
 .tour-hole {
   position: absolute;
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow:
-    0 0 0 9999px rgba(0, 0, 0, 0.48),
-    0 0 0 2px rgba(255, 255, 255, 0.88),
-    0 0 24px rgba(10, 132, 255, 0.35);
+    0 0 0 9999px rgba(0, 0, 0, 0.5),
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 20px rgba(255, 255, 255, 0.2);
   pointer-events: none;
   animation: tour-pulse 1.6s var(--qw-ease) infinite;
 }
@@ -1784,15 +1880,15 @@ button {
   0%,
   100% {
     box-shadow:
-      0 0 0 9999px rgba(0, 0, 0, 0.48),
-      0 0 0 2px rgba(255, 255, 255, 0.88),
-      0 0 18px rgba(10, 132, 255, 0.25);
+      0 0 0 9999px rgba(0, 0, 0, 0.5),
+      0 0 0 2px rgba(255, 255, 255, 0.85),
+      0 0 14px rgba(255, 255, 255, 0.12);
   }
   50% {
     box-shadow:
-      0 0 0 9999px rgba(0, 0, 0, 0.48),
+      0 0 0 9999px rgba(0, 0, 0, 0.5),
       0 0 0 2.5px rgba(255, 255, 255, 1),
-      0 0 28px rgba(10, 132, 255, 0.5);
+      0 0 22px rgba(255, 255, 255, 0.28);
   }
 }
 
@@ -2033,4 +2129,31 @@ button {
 
 .search-bar.style-capsule {
   border-radius: var(--qw-radius-pill);
+}
+
+/* Quiet selection for Liquid Glass / Classic */
+[data-style='liquid-glass'] .choice-card.selected,
+[data-style='classic'] .choice-card.selected,
+[data-style='liquid-glass'] .style-pick-card.selected,
+[data-style='classic'] .style-pick-card.selected,
+[data-style='liquid-glass'] .layout-chip.selected,
+[data-style='classic'] .layout-chip.selected,
+[data-style='liquid-glass'] .icon-family-card.selected,
+[data-style='classic'] .icon-family-card.selected,
+[data-style='liquid-glass'] .font-pick-card.selected,
+[data-style='classic'] .font-pick-card.selected {
+  box-shadow: 0 0 0 1.5px var(--qw-fg);
+  border-color: var(--qw-fg);
+}
+
+[data-style='liquid-glass'] .glass-btn.accent,
+[data-style='classic'] .glass-btn.accent,
+[data-style='liquid-glass'] .onboarding-actions .primary,
+[data-style='classic'] .onboarding-actions .primary,
+[data-style='liquid-glass'] .tour-actions .primary,
+[data-style='classic'] .tour-actions .primary,
+[data-style='liquid-glass'] .welcome-actions .primary,
+[data-style='classic'] .welcome-actions .primary {
+  background: var(--qw-fg);
+  color: var(--qw-bg);
 }

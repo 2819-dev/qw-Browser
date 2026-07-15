@@ -11,6 +11,7 @@ import {
   ICON_FAMILIES,
   VISUAL_STYLES,
   ACHIEVEMENTS,
+  UI_FONTS,
   levelFromXp,
   type AccentName,
   type WallpaperId,
@@ -21,6 +22,7 @@ import {
   type ThemeMode,
   type IconVariant,
   type VisualStyle,
+  type UiFont,
 } from '../../types/customization'
 
 function SheetShell({
@@ -68,6 +70,7 @@ export function SettingsSheet() {
   const setLoadingIcon = useQwStore((s) => s.setLoadingIcon)
   const setAppIcon = useQwStore((s) => s.setAppIcon)
   const setVisualStyle = useQwStore((s) => s.setVisualStyle)
+  const setUiFont = useQwStore((s) => s.setUiFont)
   const setStartPageContent = useQwStore((s) => s.setStartPageContent)
   const setControl = useQwStore((s) => s.setControl)
   const setSetting = useQwStore((s) => s.setSetting)
@@ -88,6 +91,7 @@ export function SettingsSheet() {
       <button
         type="button"
         className="glass glass-card"
+        data-tour="tour-full-guide"
         style={{
           width: '100%',
           marginTop: 12,
@@ -96,8 +100,7 @@ export function SettingsSheet() {
           alignItems: 'center',
           gap: 12,
           textAlign: 'left',
-          background: 'linear-gradient(135deg, var(--qw-accent-soft), transparent)',
-          border: '1px solid color-mix(in srgb, var(--qw-accent) 35%, transparent)',
+          border: '1px solid var(--qw-hairline)',
         }}
         onClick={() => {
           setShowSettings(false)
@@ -123,7 +126,9 @@ export function SettingsSheet() {
         compact
       />
 
-      <div className="section-label">Visual style</div>
+      <div className="section-label" data-tour="tour-settings-styles">
+        Visual style
+      </div>
       <div className="style-pick-list">
         {(Object.keys(VISUAL_STYLES) as VisualStyle[]).map((key) => (
           <button
@@ -145,6 +150,22 @@ export function SettingsSheet() {
               <strong>{VISUAL_STYLES[key].title}</strong>
               <span>{VISUAL_STYLES[key].subtitle}</span>
             </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="section-label">Default font</div>
+      <div className="font-pick-list">
+        {(Object.keys(UI_FONTS) as UiFont[]).map((key) => (
+          <button
+            key={key}
+            type="button"
+            className={clsx('font-pick-card', settings.uiFont === key && 'selected')}
+            onClick={() => setUiFont(key)}
+            style={{ fontFamily: UI_FONTS[key].stack }}
+          >
+            <strong>{UI_FONTS[key].title}</strong>
+            <span>{UI_FONTS[key].subtitle}</span>
           </button>
         ))}
       </div>
@@ -454,6 +475,7 @@ export function TabsSheet() {
           <div
             key={t.id}
             className={clsx('tab-card', t.id === activeTabId && 'active')}
+            data-tour="tour-tab-card"
             role="button"
             tabIndex={0}
             onClick={() => setActiveTab(t.id)}
@@ -483,6 +505,7 @@ export function TabsSheet() {
       <button
         type="button"
         className="glass-btn accent"
+        data-tour="tour-new-tab"
         style={{ width: '100%', marginTop: 16, height: 48, borderRadius: 14 }}
         onClick={() => createTab()}
       >
