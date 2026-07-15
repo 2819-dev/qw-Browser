@@ -1,71 +1,15 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 import { QwAppIcon, QwAppIconPair } from '../glass/QwAppIcon'
+import { LayoutPicker } from '../chrome/LayoutPicker'
 import { useQwStore } from '../../store/qwStore'
 import {
-  LAYOUT_META,
   ACCENT_COLORS,
   ICON_FAMILIES,
-  type ChromeLayout,
   type AccentName,
   type ThemeMode,
   type IconVariant,
 } from '../../types/customization'
-
-function LayoutPreview({ layout }: { layout: ChromeLayout }) {
-  return (
-    <div className="layout-mini">
-      {layout === 'safari' && (
-        <>
-          <div className="bar" style={{ top: 8 }} />
-          <div className="dots" style={{ bottom: 8 }}>
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
-        </>
-      )}
-      {layout === 'quiche-bottom' && (
-        <div
-          className="bar"
-          style={{ bottom: 6, height: 16, borderRadius: 8, left: 6, right: 6 }}
-        />
-      )}
-      {layout === 'quiche-top' && (
-        <div
-          className="bar"
-          style={{ top: 6, height: 16, borderRadius: 8, left: 6, right: 6 }}
-        />
-      )}
-      {layout === 'inverted' && (
-        <>
-          <div className="dots" style={{ top: 8 }}>
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
-          <div className="bar" style={{ bottom: 8 }} />
-        </>
-      )}
-      {layout === 'controls-top' && (
-        <>
-          <div className="dots" style={{ top: 8 }}>
-            <i />
-            <i />
-            <i />
-          </div>
-          <div className="bar" style={{ bottom: 8 }} />
-        </>
-      )}
-      {layout === 'search-only' && <div className="bar" style={{ bottom: 10 }} />}
-      {layout === 'minimal' && (
-        <div className="bar" style={{ bottom: 10, left: 18, right: 18, opacity: 0.55 }} />
-      )}
-    </div>
-  )
-}
 
 const STEPS = ['Welcome', 'Layout', 'Look', 'Done'] as const
 const ICON_OPTIONS = Object.keys(ICON_FAMILIES) as IconVariant[]
@@ -94,10 +38,7 @@ export function Onboarding() {
               <QwAppIcon variant={settings.appIcon} theme={theme} size={72} />
             </div>
             <h1>Meet qw.</h1>
-            <p>
-              Extremely customizable. Still minimal. Shape the chrome the way your
-              hands like — Safari, Quiche, or something quieter.
-            </p>
+            <p>Extremely customizable. Still minimal. Make it yours — quietly.</p>
           </div>
           <div className="onboarding-step-title">App icon</div>
           <div className="icon-family-grid">
@@ -126,25 +67,11 @@ export function Onboarding() {
 
       {step === 1 && (
         <>
-          <div className="onboarding-hero">
-            <h1>Place your chrome</h1>
-            <p>Search bar + controls. Pick a starting layout — you can change it anytime.</p>
+          <div className="onboarding-hero tight">
+            <h1>Where should things go?</h1>
+            <p>Scroll the options. The preview shows exactly how qw will look.</p>
           </div>
-          <div className="onboarding-step-title">Layout</div>
-          <div className="chip-grid">
-            {(Object.keys(LAYOUT_META) as ChromeLayout[]).map((key) => (
-              <button
-                key={key}
-                type="button"
-                className={clsx('choice-card', settings.chromeLayout === key && 'selected')}
-                onClick={() => setChromeLayout(key)}
-              >
-                <LayoutPreview layout={key} />
-                <strong>{LAYOUT_META[key].title}</strong>
-                <span>{LAYOUT_META[key].subtitle}</span>
-              </button>
-            ))}
-          </div>
+          <LayoutPicker value={settings.chromeLayout} onChange={setChromeLayout} />
         </>
       )}
 
@@ -152,7 +79,7 @@ export function Onboarding() {
         <>
           <div className="onboarding-hero">
             <h1>Set the vibe</h1>
-            <p>Light, dark, or system. Plus an accent that tints your glass.</p>
+            <p>Light, dark, or system. Keep it soft — or pick an accent.</p>
           </div>
           <div className="onboarding-step-title">Appearance</div>
           <div className="chip-grid three" style={{ marginBottom: 18 }}>
@@ -189,15 +116,14 @@ export function Onboarding() {
           <div className="onboarding-hero">
             <h1>You're set</h1>
             <p>
-              Want every knob? Open Settings → Full Customization Guide anytime —
-              icons, wallpapers, loading animations, the works.
+              Want every detail? Open Settings → Full Customization Guide anytime —
+              buttons, wallpaper, loaders, and more.
             </p>
           </div>
           <div className="glass glass-card" style={{ padding: 16 }}>
             <strong style={{ display: 'block', marginBottom: 6 }}>Tip</strong>
             <span style={{ color: 'var(--qw-fg-secondary)', fontSize: 14, lineHeight: 1.45 }}>
-              Your icon flips with light and dark mode automatically. Dive deeper
-              anytime with the full guide.
+              Your home screen starts clean. Add shortcuts later if you want them.
             </span>
           </div>
         </>
@@ -229,5 +155,3 @@ export function Onboarding() {
     </div>
   )
 }
-
-export { LayoutPreview }

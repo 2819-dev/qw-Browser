@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 import { QwAppIconPair } from '../glass/QwAppIcon'
-import { LayoutPreview } from '../onboarding/Onboarding'
+import { LayoutPicker } from '../chrome/LayoutPicker'
 import { useQwStore } from '../../store/qwStore'
 import {
-  LAYOUT_META,
   ACCENT_COLORS,
   WALLPAPER_META,
   ICON_FAMILIES,
-  type ChromeLayout,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -23,9 +21,9 @@ const GUIDE_STEPS = [
   { id: 'icon', title: 'App icon', blurb: 'Pick a style — light and dark versions swap with your theme.' },
   { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and blur intensity.' },
   { id: 'accent', title: 'Accent color', blurb: 'Tint buttons, badges, and highlights.' },
-  { id: 'layout', title: 'Chrome layout', blurb: 'Where search and controls live.' },
+  { id: 'layout', title: 'Where things go', blurb: 'Scroll options and preview the real layout.' },
   { id: 'searchbar', title: 'Search bar shape', blurb: 'Capsule, pill, rounded, or square.' },
-  { id: 'controls', title: 'Visible controls', blurb: 'Show only the buttons you use.' },
+  { id: 'controls', title: 'Visible buttons', blurb: 'Show only the buttons you use.' },
   { id: 'wallpaper', title: 'Start wallpaper', blurb: 'Backdrop for your start page.' },
   { id: 'start', title: 'Start page', blurb: 'Favorites, suggestions, blank, or art.' },
   { id: 'loader', title: 'Loading icon', blurb: 'How qw feels while pages load.' },
@@ -63,7 +61,7 @@ export function FullCustomizationGuide() {
         <i style={{ width: `${progress}%` }} />
       </div>
 
-      <div className="onboarding-hero">
+      <div className="onboarding-hero tight">
         <div
           style={{
             fontSize: 12,
@@ -148,20 +146,7 @@ export function FullCustomizationGuide() {
       )}
 
       {current.id === 'layout' && (
-        <div className="chip-grid">
-          {(Object.keys(LAYOUT_META) as ChromeLayout[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              className={clsx('choice-card', settings.chromeLayout === key && 'selected')}
-              onClick={() => setChromeLayout(key)}
-            >
-              <LayoutPreview layout={key} />
-              <strong>{LAYOUT_META[key].title}</strong>
-              <span>{LAYOUT_META[key].subtitle}</span>
-            </button>
-          ))}
-        </div>
+        <LayoutPicker value={settings.chromeLayout} onChange={setChromeLayout} />
       )}
 
       {current.id === 'searchbar' && (
@@ -215,7 +200,10 @@ export function FullCustomizationGuide() {
               key={w}
               type="button"
               className={clsx('wallpaper-swatch', settings.wallpaper === w && 'selected')}
-              style={{ background: WALLPAPER_META[w].css }}
+              style={{
+                background:
+                  WALLPAPER_META[w].css === 'transparent' ? 'var(--qw-bg)' : WALLPAPER_META[w].css,
+              }}
               onClick={() => setWallpaper(w)}
               aria-label={WALLPAPER_META[w].title}
             />
@@ -225,7 +213,7 @@ export function FullCustomizationGuide() {
 
       {current.id === 'start' && (
         <div className="chip-grid">
-          {(['favorites', 'suggestions', 'blank', 'wallpaper-only'] as StartPageContent[]).map(
+          {(['blank', 'favorites', 'suggestions', 'wallpaper-only'] as StartPageContent[]).map(
             (c) => (
               <button
                 key={c}

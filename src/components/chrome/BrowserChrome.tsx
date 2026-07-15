@@ -64,7 +64,7 @@ export function SearchBar({
       )}
       {tab.url === 'qw://start' && !value && (
         <span className="https-badge" style={{ marginRight: 2 }}>
-          qw
+          qw.
         </span>
       )}
       <input

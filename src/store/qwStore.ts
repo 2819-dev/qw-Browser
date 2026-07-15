@@ -301,7 +301,7 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v1',
+      name: 'qw-browser-v2',
       partialize: (s) => ({
         settings: s.settings,
         // keep last tab url lightly — but tabs reset soft for demo safety

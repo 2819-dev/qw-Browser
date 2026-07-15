@@ -13,7 +13,7 @@
   --qw-accent: #0a84ff;
   --qw-accent-soft: color-mix(in srgb, var(--qw-accent) 22%, transparent);
 
-  --qw-bg: #f2f2f7;
+  --qw-bg: #f5f5f7;
   --qw-bg-elevated: rgba(255, 255, 255, 0.72);
   --qw-bg-elevated-strong: rgba(255, 255, 255, 0.86);
   --qw-fg: #0b0b0f;
@@ -511,6 +511,10 @@ button {
   margin-bottom: 28px;
 }
 
+.onboarding-hero.tight {
+  margin-bottom: 14px;
+}
+
 .onboarding-hero .qw-mark {
   width: 72px;
   height: 72px;
@@ -531,6 +535,226 @@ button {
   font-size: 16px;
   line-height: 1.45;
   letter-spacing: -0.01em;
+}
+
+/* —— Layout picker with live preview —— */
+.layout-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.layout-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 8px;
+  margin: 0 -4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.layout-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.layout-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--qw-fg-secondary);
+  background: color-mix(in srgb, var(--qw-fg) 6%, transparent);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.layout-chip.selected {
+  color: var(--qw-fg);
+  background: color-mix(in srgb, var(--qw-fg) 10%, transparent);
+  border-color: var(--qw-accent);
+  box-shadow: 0 0 0 2px var(--qw-accent-soft);
+}
+
+.layout-preview-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.layout-preview-caption {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 280px;
+}
+
+.layout-preview-caption strong {
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+.layout-preview-caption span {
+  font-size: 13px;
+  color: var(--qw-fg-secondary);
+  line-height: 1.35;
+}
+
+.live-phone {
+  width: min(100%, 220px);
+  aspect-ratio: 9 / 16;
+  border-radius: 28px;
+  padding: 8px;
+  background: color-mix(in srgb, var(--qw-fg) 8%, transparent);
+  box-shadow: var(--qw-shadow);
+}
+
+.live-phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--qw-bg);
+}
+
+.live-start {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.live-wordmark {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.06em;
+  color: var(--qw-fg);
+  opacity: 0.88;
+}
+
+.live-edge {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.live-edge.top {
+  top: 10px;
+}
+
+.live-edge.bottom {
+  bottom: 10px;
+}
+
+.live-edge.padded {
+  left: 22px;
+  right: 22px;
+}
+
+.live-blob {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 16px;
+  background: var(--qw-bg-elevated-strong);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--qw-glass-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.live-blob.at-bottom {
+  bottom: 10px;
+}
+
+.live-blob.at-top {
+  top: 10px;
+}
+
+.live-blob.flat {
+  position: relative;
+  left: auto;
+  right: auto;
+  padding: 4px 6px;
+}
+
+.live-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--qw-fg) 5%, transparent);
+  font-size: 10px;
+}
+
+.live-search.compact {
+  opacity: 0.85;
+}
+
+.live-search-qw {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--qw-fg-secondary);
+}
+
+.live-search-ph {
+  color: var(--qw-fg-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 2px;
+  color: var(--qw-fg-secondary);
+}
+
+.live-spacer {
+  flex: 1;
+}
+
+.layout-picker.compact .live-phone {
+  width: min(100%, 180px);
+}
+
+.start-page.clean .wordmark {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -0.07em;
+  opacity: 0.9;
+  margin-bottom: 0;
+}
+
+.start-page .empty-hint.quiet {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--qw-fg-tertiary);
+}
+
+.clean-tile {
+  background: color-mix(in srgb, var(--qw-fg) 6%, var(--qw-bg)) !important;
+  color: var(--qw-fg) !important;
+  box-shadow: none !important;
+  border: 1px solid var(--qw-hairline);
+  font-weight: 600;
 }
 
 .onboarding-step-title {

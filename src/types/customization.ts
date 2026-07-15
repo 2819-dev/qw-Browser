@@ -148,7 +148,7 @@ export const DEFAULT_SETTINGS: QwSettings = {
   fullGuideComplete: false,
 
   themeMode: 'system',
-  accent: 'blue',
+  accent: 'mono',
   glassIntensity: 'medium',
   reduceMotion: false,
   appIcon: 'classic',
@@ -169,15 +169,10 @@ export const DEFAULT_SETTINGS: QwSettings = {
   },
 
   startPageUrl: 'qw://start',
-  startPageContent: 'favorites',
-  wallpaper: 'aurora',
+  startPageContent: 'blank',
+  wallpaper: 'none',
   showQwWordmark: true,
-  favoriteShortcuts: [
-    'https://apple.com',
-    'https://developer.apple.com',
-    'https://wikipedia.org',
-    'https://duckduckgo.com',
-  ],
+  favoriteShortcuts: [],
 
   searchEngine: 'duckduckgo',
   loadingIcon: 'qw',
@@ -204,39 +199,39 @@ export const LAYOUT_META: Record<
   ChromeLayout,
   { title: string; subtitle: string; preview: string }
 > = {
-  safari: {
-    title: 'Safari style',
-    subtitle: 'Search on top, controls below',
-    preview: 'top-search / bottom-controls',
-  },
   'quiche-bottom': {
-    title: 'Unified bottom',
-    subtitle: 'Search + controls in one blob',
-    preview: 'bottom blob',
+    title: 'Together',
+    subtitle: 'Search and buttons in one bar at the bottom',
+    preview: 'bottom together',
   },
   'quiche-top': {
-    title: 'Unified top',
-    subtitle: 'Search + controls in one blob up top',
-    preview: 'top blob',
+    title: 'Together up top',
+    subtitle: 'Search and buttons in one bar at the top',
+    preview: 'top together',
   },
-  inverted: {
-    title: 'Inverted',
-    subtitle: 'Controls above, search below',
-    preview: 'top-controls / bottom-search',
-  },
-  'controls-top': {
-    title: 'Controls top',
-    subtitle: 'Toolbar above, search at bottom',
+  safari: {
+    title: 'Split',
+    subtitle: 'Search above, buttons below',
     preview: 'split',
   },
+  inverted: {
+    title: 'Flipped',
+    subtitle: 'Buttons above, search below',
+    preview: 'flipped',
+  },
+  'controls-top': {
+    title: 'Buttons up',
+    subtitle: 'Buttons on top, search at the bottom',
+    preview: 'buttons top',
+  },
   'search-only': {
-    title: 'Search only',
-    subtitle: 'Just the bar — swipe for the rest',
-    preview: 'bottom search',
+    title: 'Just search',
+    subtitle: 'Only the search bar — clean and quiet',
+    preview: 'search only',
   },
   minimal: {
-    title: 'Minimal',
-    subtitle: 'Floating search, almost no chrome',
+    title: 'Floating',
+    subtitle: 'A light search bar that nearly disappears',
     preview: 'floating',
   },
 }

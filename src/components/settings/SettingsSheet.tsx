@@ -3,14 +3,12 @@ import { ChevronRight, X, Sparkles } from 'lucide-react'
 import { Glass } from '../glass/Glass'
 import { Toggle } from '../glass/Glass'
 import { QwAppIcon, QwAppIconPair } from '../glass/QwAppIcon'
-import { LayoutPreview } from '../onboarding/Onboarding'
+import { LayoutPicker } from '../chrome/LayoutPicker'
 import { useQwStore } from '../../store/qwStore'
 import {
-  LAYOUT_META,
   ACCENT_COLORS,
   WALLPAPER_META,
   ICON_FAMILIES,
-  type ChromeLayout,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -103,21 +101,12 @@ export function SettingsSheet() {
         <ChevronRight size={18} color="var(--qw-fg-tertiary)" />
       </button>
 
-      <div className="section-label">Chrome</div>
-      <div className="chip-grid">
-        {(Object.keys(LAYOUT_META) as ChromeLayout[]).map((key) => (
-          <button
-            key={key}
-            type="button"
-            className={clsx('choice-card', settings.chromeLayout === key && 'selected')}
-            onClick={() => setChromeLayout(key)}
-          >
-            <LayoutPreview layout={key} />
-            <strong>{LAYOUT_META[key].title}</strong>
-            <span>{LAYOUT_META[key].subtitle}</span>
-          </button>
-        ))}
-      </div>
+      <div className="section-label">Bars & buttons</div>
+      <LayoutPicker
+        value={settings.chromeLayout}
+        onChange={setChromeLayout}
+        compact
+      />
 
       <div className="section-label">Search bar</div>
       <div className="chip-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
@@ -134,7 +123,7 @@ export function SettingsSheet() {
         ))}
       </div>
 
-      <div className="section-label">Controls</div>
+      <div className="section-label">Buttons</div>
       <div className="settings-group">
         {(Object.keys(settings.controls) as (keyof typeof settings.controls)[]).map((key) => (
           <div key={key} className="settings-row">
@@ -234,7 +223,7 @@ export function SettingsSheet() {
 
       <div className="section-label">Start page</div>
       <div className="chip-grid">
-        {(['favorites', 'suggestions', 'blank', 'wallpaper-only'] as StartPageContent[]).map(
+        {(['blank', 'favorites', 'suggestions', 'wallpaper-only'] as StartPageContent[]).map(
           (c) => (
             <button
               key={c}

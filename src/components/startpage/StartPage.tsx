@@ -13,9 +13,7 @@ function letter(url: string) {
   return hostLabel(url).charAt(0).toUpperCase()
 }
 
-const TILE_COLORS = ['#0A84FF', '#5E5CE6', '#BF5AF2', '#FF375F', '#FF9F0A', '#30D158', '#64D2FF', '#FF6482']
-
-const DARK_WALLPAPERS = new Set<WallpaperId>(['aurora', 'orb', 'night', 'mesh', 'solid'])
+const DARK_WALLPAPERS = new Set<WallpaperId>(['aurora', 'orb', 'night', 'mesh'])
 
 export function StartPage() {
   const settings = useQwStore((s) => s.settings)
@@ -24,58 +22,43 @@ export function StartPage() {
   const wallpaper = WALLPAPER_META[settings.wallpaper]
   const onDarkArt =
     DARK_WALLPAPERS.has(settings.wallpaper) ||
-    (settings.wallpaper === 'none' && theme === 'dark') ||
-    (settings.wallpaper === 'solid' && theme === 'dark')
+    ((settings.wallpaper === 'none' || settings.wallpaper === 'solid') && theme === 'dark')
+
+  const favorites = settings.favoriteShortcuts
 
   return (
     <div
-      className="start-page"
+      className="start-page clean"
       data-on-dark={onDarkArt ? 'true' : 'false'}
       style={{
-        background: wallpaper.css,
+        background:
+          settings.wallpaper === 'none' ? 'var(--qw-bg)' : wallpaper.css,
       }}
     >
       {settings.showQwWordmark && settings.startPageContent !== 'wallpaper-only' && (
-        <div className="wordmark">qw</div>
+        <div className="wordmark">qw.</div>
       )}
 
       {settings.startPageContent === 'favorites' && (
         <div className="favorites">
-          {settings.favoriteShortcuts.map((url, i) => (
-            <button key={url} className="favorite" type="button" onClick={() => navigate(url)}>
-              <div className="tile glass" style={{ background: TILE_COLORS[i % TILE_COLORS.length] }}>
-                {letter(url)}
-              </div>
-              <span className="name">{hostLabel(url)}</span>
-            </button>
-          ))}
+          {favorites.length === 0 ? (
+            <p className="empty-hint quiet">Your shortcuts will show up here</p>
+          ) : (
+            favorites.map((url) => (
+              <button key={url} className="favorite" type="button" onClick={() => navigate(url)}>
+                <div className="tile clean-tile">{letter(url)}</div>
+                <span className="name">{hostLabel(url)}</span>
+              </button>
+            ))
+          )}
         </div>
       )}
 
       {settings.startPageContent === 'suggestions' && (
-        <div style={{ width: 'min(100%, 340px)' }}>
-          <div className="glass glass-card" style={{ padding: 16 }}>
-            <div style={{ fontSize: 13, color: 'var(--qw-fg-secondary)', marginBottom: 10 }}>
-              Suggestions
-            </div>
-            {['apple.com', 'news', 'weather', 'wikipedia'].map((q) => (
-              <button
-                key={q}
-                type="button"
-                className="settings-row"
-                style={{ borderRadius: 12, marginBottom: 6 }}
-                onClick={() => navigate(q)}
-              >
-                <strong style={{ fontSize: 15 }}>{q}</strong>
-              </button>
-            ))}
-          </div>
-        </div>
+        <p className="empty-hint quiet">Start typing to search</p>
       )}
 
-      {settings.startPageContent === 'blank' && (
-        <p className="empty-hint">Type above to search the web</p>
-      )}
+      {settings.startPageContent === 'blank' && null}
     </div>
   )
 }
