@@ -10,6 +10,8 @@ import {
   WALLPAPER_META,
   ICON_FAMILIES,
   VISUAL_STYLES,
+  ACHIEVEMENTS,
+  levelFromXp,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -70,9 +72,19 @@ export function SettingsSheet() {
   const setControl = useQwStore((s) => s.setControl)
   const setSetting = useQwStore((s) => s.setSetting)
   const resetSettings = useQwStore((s) => s.resetSettings)
+  const restartTour = useQwStore((s) => s.restartTour)
 
   return (
     <SheetShell title="Settings" onClose={() => setShowSettings(false)}>
+      <div className="xp-banner glass glass-card">
+        <div>
+          <strong>Level {levelFromXp(settings.xp)}</strong>
+          <span style={{ display: 'block', marginTop: 2 }}>
+            {settings.xp} XP · {settings.sitesVisited} sites · for qw://games
+          </span>
+        </div>
+      </div>
+
       <button
         type="button"
         className="glass glass-card"
@@ -190,10 +202,15 @@ export function SettingsSheet() {
         <div className="settings-row">
           <div className="label">
             <strong>Glass</strong>
-            <span>Blur intensity</span>
+            <span>
+              {settings.visualStyle === 'liquid-glass'
+                ? 'Blur intensity'
+                : 'Only applies to Liquid Glass'}
+            </span>
           </div>
           <select
             value={settings.glassIntensity}
+            disabled={settings.visualStyle !== 'liquid-glass'}
             onChange={(e) => setGlassIntensity(e.target.value as GlassIntensity)}
             style={{
               background: 'transparent',
@@ -201,6 +218,7 @@ export function SettingsSheet() {
               borderRadius: 10,
               padding: '6px 8px',
               color: 'var(--qw-fg)',
+              opacity: settings.visualStyle === 'liquid-glass' ? 1 : 0.45,
             }}
           >
             <option value="subtle">Subtle</option>
@@ -368,12 +386,51 @@ export function SettingsSheet() {
         </div>
       </div>
 
+      <div className="section-label">Achievements</div>
+      <div className="achievements-list">
+        {ACHIEVEMENTS.map((a) => {
+          const unlocked = settings.unlockedAchievements.includes(a.id)
+          return (
+            <div
+              key={a.id}
+              className={`achievement-row ${unlocked ? '' : 'locked'}`}
+            >
+              <div className="ach-icon">{unlocked ? '✓' : '·'}</div>
+              <div className="label" style={{ flex: 1 }}>
+                <strong>{a.title}</strong>
+                <span>
+                  {a.description} · +{a.xp} XP
+                </span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="section-label">Guide</div>
+      <div className="settings-group">
+        <button
+          type="button"
+          className="settings-row"
+          onClick={() => {
+            setShowSettings(false)
+            restartTour()
+          }}
+        >
+          <div className="label">
+            <strong>Replay feature guide</strong>
+            <span>Highlight controls again</span>
+          </div>
+          <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
+        </button>
+      </div>
+
       <div className="section-label">Reset</div>
       <div className="settings-group">
         <button type="button" className="settings-row" onClick={resetSettings}>
           <div className="label">
             <strong>Reset customization</strong>
-            <span>Keeps you signed in to qw prefs defaults</span>
+            <span>Restores defaults (keeps onboarding done)</span>
           </div>
           <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
         </button>

@@ -4,6 +4,8 @@ import { useQwStore } from './store/qwStore'
 import { BrowserChrome } from './components/chrome/BrowserChrome'
 import { BrowserView } from './components/chrome/BrowserView'
 import { Onboarding } from './components/onboarding/Onboarding'
+import { FeatureTour } from './components/onboarding/FeatureTour'
+import { WelcomeCeremony } from './components/onboarding/WelcomeCeremony'
 import { SettingsSheet, TabsSheet } from './components/settings/SettingsSheet'
 import { FullCustomizationGuide } from './components/settings/FullCustomizationGuide'
 import './styles/qw.css'
@@ -22,7 +24,7 @@ function useResolvedTheme() {
       document.documentElement.dataset.theme = resolved
       const meta = document.querySelector('meta[name="theme-color"]')
       if (meta) {
-        meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f5f5f7')
+        meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f2f2f7')
       }
     }
     apply()
@@ -88,6 +90,8 @@ export default function App() {
 
   const settings = useQwStore((s) => s.settings)
   const showOnboarding = useQwStore((s) => s.showOnboarding)
+  const showTour = useQwStore((s) => s.showTour)
+  const showWelcome = useQwStore((s) => s.showWelcome)
   const showSettings = useQwStore((s) => s.showSettings)
   const showTabs = useQwStore((s) => s.showTabs)
   const showFullGuide = useQwStore((s) => s.showFullGuide)
@@ -100,7 +104,7 @@ export default function App() {
     document.documentElement.style.setProperty('--qw-accent', accent)
     document.documentElement.style.setProperty(
       '--qw-accent-soft',
-      `color-mix(in srgb, ${accent} 22%, transparent)`,
+      `color-mix(in srgb, ${accent} 18%, transparent)`,
     )
     document.documentElement.dataset.glass = settings.glassIntensity
     document.documentElement.dataset.style = settings.visualStyle
@@ -117,6 +121,8 @@ export default function App() {
           {showTabs && <TabsSheet />}
           {showFullGuide && <FullCustomizationGuide />}
           {showOnboarding && <Onboarding />}
+          {showTour && !showOnboarding && <FeatureTour />}
+          {showWelcome && <WelcomeCeremony />}
         </div>
       </div>
     </div>

@@ -1,13 +1,13 @@
 export type ThemeMode = 'system' | 'light' | 'dark'
 
 export type ChromeLayout =
-  | 'safari' // search top, controls bottom
-  | 'quiche-bottom' // search + controls unified blob at bottom
-  | 'quiche-top' // search + controls unified blob at top
-  | 'inverted' // controls top, search bottom
-  | 'controls-top' // controls only on top, search bottom separate
-  | 'search-only' // just a search bar, no controls chrome
-  | 'minimal' // floating search, gesture-first / no chrome chrome bar
+  | 'safari'
+  | 'quiche-bottom'
+  | 'quiche-top'
+  | 'inverted'
+  | 'controls-top'
+  | 'search-only'
+  | 'minimal'
 
 export type SearchBarStyle = 'pill' | 'rounded' | 'square' | 'capsule'
 
@@ -22,15 +22,15 @@ export const VISUAL_STYLES: Record<
 > = {
   'liquid-glass': {
     title: 'Liquid Glass',
-    subtitle: 'Frosted, soft, Apple-like blur',
+    subtitle: 'Frosted refraction — real Apple-like glass',
   },
   classic: {
     title: 'Classic',
-    subtitle: 'Clean solids. Simple and clear',
+    subtitle: 'Solid opaque bars. Zero blur',
   },
   cyber: {
     title: 'Cyber',
-    subtitle: 'Neon, glow, gamer energy',
+    subtitle: 'Neon gamer energy',
   },
 }
 
@@ -55,17 +55,10 @@ export type WallpaperId =
   | 'coral'
   | 'solid'
 
-export type LoadingIcon =
-  | 'spinner'
-  | 'dots'
-  | 'pulse'
-  | 'ring'
-  | 'bars'
-  | 'qw'
+export type LoadingIcon = 'spinner' | 'dots' | 'pulse' | 'ring' | 'bars' | 'qw'
 
 export type StartPageContent = 'favorites' | 'blank' | 'suggestions' | 'wallpaper-only'
 
-/** Icon style family — each has light + dark assets that swap with theme */
 export type IconVariant =
   | 'classic'
   | 'gradient-blue'
@@ -94,14 +87,10 @@ export const ICON_FAMILIES: Record<
   },
 }
 
-export function resolveIconSrc(
-  family: IconVariant,
-  theme: 'light' | 'dark',
-): string {
+export function resolveIconSrc(family: IconVariant, theme: 'light' | 'dark'): string {
   return `/icons/${family}-${theme}.png`
 }
 
-/** Migrate older placeholder icon ids */
 export function normalizeIconVariant(value: unknown): IconVariant {
   const legacy: Record<string, IconVariant> = {
     auto: 'classic',
@@ -126,12 +115,66 @@ export type ControlSet = {
   home: boolean
 }
 
+export type AchievementId =
+  | 'welcome'
+  | 'first-search'
+  | 'customizer'
+  | 'tab-hopper'
+  | 'explorer-10'
+  | 'explorer-100'
+
+export type AchievementDef = {
+  id: AchievementId
+  title: string
+  description: string
+  xp: number
+}
+
+export const ACHIEVEMENTS: AchievementDef[] = [
+  {
+    id: 'welcome',
+    title: 'Welcome to qw',
+    description: 'Finished your first tour',
+    xp: 50,
+  },
+  {
+    id: 'first-search',
+    title: 'First Search',
+    description: 'Searched or opened a site',
+    xp: 25,
+  },
+  {
+    id: 'customizer',
+    title: 'Customizer',
+    description: 'Opened Settings',
+    xp: 25,
+  },
+  {
+    id: 'tab-hopper',
+    title: 'Tab Hopper',
+    description: 'Opened 3 tabs',
+    xp: 40,
+  },
+  {
+    id: 'explorer-10',
+    title: 'Explorer I',
+    description: 'Visit 10 sites',
+    xp: 75,
+  },
+  {
+    id: 'explorer-100',
+    title: 'Explorer II',
+    description: 'Visit 100 sites — for qw://games power',
+    xp: 250,
+  },
+]
+
 export type QwSettings = {
-  // Meta
   onboardingComplete: boolean
+  tourComplete: boolean
+  welcomeSeen: boolean
   fullGuideComplete: boolean
 
-  // Appearance
   themeMode: ThemeMode
   visualStyle: VisualStyle
   accent: AccentName
@@ -139,40 +182,43 @@ export type QwSettings = {
   reduceMotion: boolean
   appIcon: IconVariant
 
-  // Chrome layout
   chromeLayout: ChromeLayout
   searchBarStyle: SearchBarStyle
   showStatusHints: boolean
   urlAlwaysExpanded: boolean
   controls: ControlSet
 
-  // Start page
   startPageUrl: string
   startPageContent: StartPageContent
   wallpaper: WallpaperId
   showQwWordmark: boolean
   favoriteShortcuts: string[]
 
-  // Behavior
   searchEngine: 'duckduckgo' | 'google' | 'bing' | 'ecosia' | 'brave'
   loadingIcon: LoadingIcon
   openLinksInNewTab: boolean
   confirmCloseTab: boolean
   haptics: boolean
 
-  // Privacy-ish prefs (UI level)
   clearOnExit: boolean
   showHttpsBadge: boolean
+
+  /** progress for future qw://games */
+  unlockedAchievements: AchievementId[]
+  sitesVisited: number
+  xp: number
 }
 
 export const DEFAULT_SETTINGS: QwSettings = {
   onboardingComplete: false,
+  tourComplete: false,
+  welcomeSeen: false,
   fullGuideComplete: false,
 
   themeMode: 'system',
   visualStyle: 'liquid-glass',
-  accent: 'mono',
-  glassIntensity: 'medium',
+  accent: 'blue',
+  glassIntensity: 'strong',
   reduceMotion: false,
   appIcon: 'classic',
 
@@ -205,13 +251,17 @@ export const DEFAULT_SETTINGS: QwSettings = {
 
   clearOnExit: false,
   showHttpsBadge: true,
+
+  unlockedAchievements: [],
+  sitesVisited: 0,
+  xp: 0,
 }
 
 export const ACCENT_COLORS: Record<AccentName, string> = {
-  blue: '#0A84FF',
-  indigo: '#5E5CE6',
-  purple: '#BF5AF2',
-  pink: '#FF375F',
+  blue: '#007AFF',
+  indigo: '#5856D6',
+  purple: '#AF52DE',
+  pink: '#FF2D55',
   orange: '#FF9F0A',
   teal: '#64D2FF',
   green: '#30D158',
@@ -301,4 +351,8 @@ export const SEARCH_ENGINE_URLS: Record<QwSettings['searchEngine'], string> = {
   bing: 'https://www.bing.com/search?q=',
   ecosia: 'https://www.ecosia.org/search?q=',
   brave: 'https://search.brave.com/search?q=',
+}
+
+export function levelFromXp(xp: number) {
+  return Math.floor(xp / 100) + 1
 }

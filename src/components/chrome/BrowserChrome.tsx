@@ -70,6 +70,7 @@ export function SearchBar({
         `style-${style}`,
         compact && 'compact',
       )}
+      data-tour="tour-search"
       onSubmit={onSubmit}
     >
       {settings.showHttpsBadge && tab.url.startsWith('https') && (
@@ -156,8 +157,23 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
       )}
       <div className="spacer" />
       {c.bookmarks && (
-        <GlassButton aria-label="Bookmarks" onClick={() => haptic()}>
-          <Bookmark size={18} strokeWidth={2.1} />
+        <GlassButton
+          aria-label="Bookmark"
+          onClick={() => {
+            haptic()
+            useQwStore.getState().toggleBookmark()
+          }}
+          style={{
+            color: settings.favoriteShortcuts.includes(tab.url)
+              ? 'var(--qw-accent)'
+              : undefined,
+          }}
+        >
+          <Bookmark
+            size={18}
+            strokeWidth={2.1}
+            fill={settings.favoriteShortcuts.includes(tab.url) ? 'currentColor' : 'none'}
+          />
         </GlassButton>
       )}
       {c.share && (
@@ -174,7 +190,11 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
         </GlassButton>
       )}
       {c.tabs && (
-        <GlassButton aria-label="Tabs" onClick={press(() => setShowTabs(true))}>
+        <GlassButton
+          aria-label="Tabs"
+          data-tour="tour-tabs"
+          onClick={press(() => setShowTabs(true))}
+        >
           <span className="tab-badge-wrap">
             <Layers size={18} strokeWidth={2.1} />
             <span className="tab-badge">{tabs.length}</span>
@@ -182,7 +202,11 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
         </GlassButton>
       )}
       {c.settings && (
-        <GlassButton aria-label="Settings" onClick={press(() => setShowSettings(true))}>
+        <GlassButton
+          aria-label="Settings"
+          data-tour="tour-settings"
+          onClick={press(() => setShowSettings(true))}
+        >
           <Settings size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
@@ -217,6 +241,7 @@ function QuietAccess() {
         {showTabs && (
           <GlassButton
             aria-label="Tabs"
+            data-tour="tour-tabs"
             onClick={() => {
               haptic()
               setShowTabs(true)
@@ -231,6 +256,7 @@ function QuietAccess() {
         {showSettingsBtn && (
           <GlassButton
             aria-label="Settings"
+            data-tour="tour-settings"
             onClick={() => {
               haptic()
               setShowSettings(true)

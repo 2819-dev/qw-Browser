@@ -15,6 +15,8 @@ import {
   type VisualStyle,
   type StartPageContent,
   type ControlSet,
+  type AchievementId,
+  ACHIEVEMENTS,
 } from '../types/customization'
 
 type Tab = {
@@ -37,6 +39,8 @@ type BrowserState = {
   showTabs: boolean
   showFullGuide: boolean
   showOnboarding: boolean
+  showTour: boolean
+  showWelcome: boolean
   resolvedTheme: 'light' | 'dark'
 
   // settings mutators
@@ -55,11 +59,19 @@ type BrowserState = {
   setStartPageContent: (content: StartPageContent) => void
   setControl: (key: keyof ControlSet, value: boolean) => void
   completeOnboarding: () => void
+  completeTour: () => void
+  completeWelcome: () => void
+  unlockAchievement: (id: AchievementId) => void
+  recordSiteVisit: (url: string) => void
+  toggleBookmark: (url?: string) => void
+  restartTour: () => void
 
   // ui
   setShowSettings: (v: boolean) => void
   setShowTabs: (v: boolean) => void
   setShowFullGuide: (v: boolean) => void
+  setShowTour: (v: boolean) => void
+  setShowWelcome: (v: boolean) => void
   setResolvedTheme: (t: 'light' | 'dark') => void
 
   // tabs
@@ -121,6 +133,8 @@ export const useQwStore = create<BrowserState>()(
       showTabs: false,
       showFullGuide: false,
       showOnboarding: !DEFAULT_SETTINGS.onboardingComplete,
+      showTour: false,
+      showWelcome: false,
       resolvedTheme: 'dark',
 
       setSetting: (key, value) =>
@@ -175,12 +189,94 @@ export const useQwStore = create<BrowserState>()(
         set((s) => ({
           settings: { ...s.settings, onboardingComplete: true },
           showOnboarding: false,
+          showTour: true,
         })),
 
-      setShowSettings: (showSettings) => set({ showSettings }),
+      completeTour: () =>
+        set((s) => ({
+          settings: { ...s.settings, tourComplete: true },
+          showTour: false,
+          showWelcome: true,
+          showSettings: false,
+          showTabs: false,
+        })),
+
+      completeWelcome: () => {
+        get().unlockAchievement('welcome')
+        set((s) => ({
+          settings: { ...s.settings, welcomeSeen: true },
+          showWelcome: false,
+        }))
+      },
+
+      unlockAchievement: (id) => {
+        const { settings } = get()
+        if (settings.unlockedAchievements.includes(id)) return
+        const def = ACHIEVEMENTS.find((a) => a.id === id)
+        const xp = settings.xp + (def?.xp ?? 0)
+        set({
+          settings: {
+            ...settings,
+            unlockedAchievements: [...settings.unlockedAchievements, id],
+            xp,
+          },
+        })
+      },
+
+      recordSiteVisit: (url) => {
+        if (!url.startsWith('http')) return
+        const { settings } = get()
+        const sitesVisited = settings.sitesVisited + 1
+        const patch: Partial<typeof settings> = { sitesVisited }
+        set({ settings: { ...settings, ...patch } })
+        get().unlockAchievement('first-search')
+        if (sitesVisited >= 10) get().unlockAchievement('explorer-10')
+        if (sitesVisited >= 100) get().unlockAchievement('explorer-100')
+      },
+
+      toggleBookmark: (url?: string) => {
+        const state = get()
+        const target = url ?? state.activeTab().url
+        if (!target.startsWith('http')) return
+        const list = state.settings.favoriteShortcuts
+        const exists = list.includes(target)
+        const favoriteShortcuts = exists
+          ? list.filter((u) => u !== target)
+          : [...list, target]
+        set({
+          settings: {
+            ...state.settings,
+            favoriteShortcuts,
+            startPageContent:
+              !exists && state.settings.startPageContent === 'blank'
+                ? 'favorites'
+                : state.settings.startPageContent,
+          },
+        })
+      },
+
+      setShowSettings: (showSettings) => {
+        set({ showSettings })
+        if (showSettings) get().unlockAchievement('customizer')
+      },
       setShowTabs: (showTabs) => set({ showTabs }),
       setShowFullGuide: (showFullGuide) => set({ showFullGuide }),
+      setShowTour: (showTour) => set({ showTour }),
+      setShowWelcome: (showWelcome) => set({ showWelcome }),
       setResolvedTheme: (resolvedTheme) => set({ resolvedTheme }),
+      restartTour: () =>
+        set((s) => ({
+          settings: {
+            ...s.settings,
+            tourComplete: false,
+            welcomeSeen: false,
+          },
+          showTour: true,
+          showWelcome: false,
+          showSettings: false,
+          showTabs: false,
+          showOnboarding: false,
+        })),
 
       activeTab: () => {
         const { tabs, activeTabId } = get()
@@ -194,6 +290,7 @@ export const useQwStore = create<BrowserState>()(
           activeTabId: tab.id,
           showTabs: false,
         }))
+        if (get().tabs.length >= 3) get().unlockAchievement('tab-hopper')
       },
 
       closeTab: (id) => {
@@ -230,6 +327,7 @@ export const useQwStore = create<BrowserState>()(
             }
           }),
         })
+        if (url.startsWith('http')) get().recordSiteVisit(url)
       },
 
       goBack: () => {
@@ -306,10 +404,9 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v3',
+      name: 'qw-browser-v4',
       partialize: (s) => ({
         settings: s.settings,
-        // keep last tab url lightly — but tabs reset soft for demo safety
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
@@ -317,7 +414,16 @@ export const useQwStore = create<BrowserState>()(
           if (!state.settings.visualStyle) {
             state.settings.visualStyle = 'liquid-glass'
           }
+          state.settings.unlockedAchievements ??= []
+          state.settings.sitesVisited ??= 0
+          state.settings.xp ??= 0
+          state.settings.tourComplete ??= false
+          state.settings.welcomeSeen ??= false
           state.showOnboarding = !state.settings.onboardingComplete
+          state.showTour =
+            state.settings.onboardingComplete && !state.settings.tourComplete
+          state.showWelcome =
+            state.settings.tourComplete && !state.settings.welcomeSeen
         }
       },
     },
