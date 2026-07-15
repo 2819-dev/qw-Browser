@@ -1,4 +1,4 @@
-import { WALLPAPER_META } from '../../types/customization'
+import { WALLPAPER_META, type WallpaperId } from '../../types/customization'
 import { useQwStore } from '../../store/qwStore'
 
 function hostLabel(url: string) {
@@ -15,14 +15,22 @@ function letter(url: string) {
 
 const TILE_COLORS = ['#0A84FF', '#5E5CE6', '#BF5AF2', '#FF375F', '#FF9F0A', '#30D158', '#64D2FF', '#FF6482']
 
+const DARK_WALLPAPERS = new Set<WallpaperId>(['aurora', 'orb', 'night', 'mesh', 'solid'])
+
 export function StartPage() {
   const settings = useQwStore((s) => s.settings)
+  const theme = useQwStore((s) => s.resolvedTheme)
   const navigate = useQwStore((s) => s.navigate)
   const wallpaper = WALLPAPER_META[settings.wallpaper]
+  const onDarkArt =
+    DARK_WALLPAPERS.has(settings.wallpaper) ||
+    (settings.wallpaper === 'none' && theme === 'dark') ||
+    (settings.wallpaper === 'solid' && theme === 'dark')
 
   return (
     <div
       className="start-page"
+      data-on-dark={onDarkArt ? 'true' : 'false'}
       style={{
         background: wallpaper.css,
       }}

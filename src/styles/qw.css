@@ -586,6 +586,16 @@ button {
   opacity: 0.92;
 }
 
+.start-page[data-on-dark='true'] .wordmark {
+  color: #f5f5f7;
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.start-page[data-on-dark='true'] .favorite .name,
+.start-page[data-on-dark='true'] .empty-hint {
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .favorites {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
