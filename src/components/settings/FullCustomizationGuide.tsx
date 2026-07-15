@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import clsx from 'clsx'
-import { QwAppIcon } from '../glass/QwAppIcon'
+import { QwAppIconPair } from '../glass/QwAppIcon'
 import { LayoutPreview } from '../onboarding/Onboarding'
 import { useQwStore } from '../../store/qwStore'
 import {
   LAYOUT_META,
   ACCENT_COLORS,
   WALLPAPER_META,
+  ICON_FAMILIES,
   type ChromeLayout,
   type AccentName,
   type WallpaperId,
@@ -19,7 +20,7 @@ import {
 } from '../../types/customization'
 
 const GUIDE_STEPS = [
-  { id: 'icon', title: 'App icon', blurb: 'Light, dark, glass, or auto with theme.' },
+  { id: 'icon', title: 'App icon', blurb: 'Pick a style — light and dark versions swap with your theme.' },
   { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and blur intensity.' },
   { id: 'accent', title: 'Accent color', blurb: 'Tint buttons, badges, and highlights.' },
   { id: 'layout', title: 'Chrome layout', blurb: 'Where search and controls live.' },
@@ -34,7 +35,6 @@ const GUIDE_STEPS = [
 export function FullCustomizationGuide() {
   const [step, setStep] = useState(0)
   const settings = useQwStore((s) => s.settings)
-  const theme = useQwStore((s) => s.resolvedTheme)
   const setShowFullGuide = useQwStore((s) => s.setShowFullGuide)
   const patchSettings = useQwStore((s) => s.patchSettings)
   const setChromeLayout = useQwStore((s) => s.setChromeLayout)
@@ -81,15 +81,20 @@ export function FullCustomizationGuide() {
       </div>
 
       {current.id === 'icon' && (
-        <div className="icon-picker">
-          {(['auto', 'light', 'dark', 'glass', 'mono'] as IconVariant[]).map((v) => (
+        <div className="icon-family-grid">
+          {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
             <button
               key={v}
               type="button"
-              className={clsx('app-icon-preview', settings.appIcon === v && 'selected')}
+              className={clsx('icon-family-card', settings.appIcon === v && 'selected')}
               onClick={() => setAppIcon(v)}
             >
-              <QwAppIcon variant={v} theme={theme} size={64} />
+              <QwAppIconPair variant={v} size={48} />
+              <strong>
+                {ICON_FAMILIES[v].title}
+                {ICON_FAMILIES[v].pro ? <span className="pro-badge">PRO</span> : null}
+              </strong>
+              <span>{ICON_FAMILIES[v].subtitle}</span>
             </button>
           ))}
         </div>

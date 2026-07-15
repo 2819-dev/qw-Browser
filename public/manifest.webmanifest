@@ -9,16 +9,22 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/icons/qw-icon-light.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/classic-light.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/qw-icon-dark.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/classic-dark.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/qw-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

@@ -2,13 +2,14 @@ import clsx from 'clsx'
 import { ChevronRight, X, Sparkles } from 'lucide-react'
 import { Glass } from '../glass/Glass'
 import { Toggle } from '../glass/Glass'
-import { QwAppIcon } from '../glass/QwAppIcon'
+import { QwAppIcon, QwAppIconPair } from '../glass/QwAppIcon'
 import { LayoutPreview } from '../onboarding/Onboarding'
 import { useQwStore } from '../../store/qwStore'
 import {
   LAYOUT_META,
   ACCENT_COLORS,
   WALLPAPER_META,
+  ICON_FAMILIES,
   type ChromeLayout,
   type AccentName,
   type WallpaperId,
@@ -205,19 +206,30 @@ export function SettingsSheet() {
       </div>
 
       <div className="section-label">App icon</div>
-      <div className="icon-picker">
-        {(['auto', 'light', 'dark', 'glass', 'mono'] as IconVariant[]).map((v) => (
+      <p style={{ fontSize: 12, color: 'var(--qw-fg-secondary)', margin: '0 0 10px' }}>
+        Light and dark versions swap with your theme.
+      </p>
+      <div className="icon-family-grid">
+        {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
           <button
             key={v}
             type="button"
-            className={clsx('app-icon-preview', settings.appIcon === v && 'selected')}
+            className={clsx('icon-family-card', settings.appIcon === v && 'selected')}
             onClick={() => setAppIcon(v)}
-            aria-label={v}
-            title={v}
+            aria-label={ICON_FAMILIES[v].title}
+            title={ICON_FAMILIES[v].title}
           >
-            <QwAppIcon variant={v} theme={theme} size={64} />
+            <QwAppIconPair variant={v} size={40} />
+            <strong>
+              {ICON_FAMILIES[v].title}
+              {ICON_FAMILIES[v].pro ? <span className="pro-badge">PRO</span> : null}
+            </strong>
           </button>
         ))}
+      </div>
+      <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 12, color: 'var(--qw-fg-secondary)' }}>Now</span>
+        <QwAppIcon variant={settings.appIcon} theme={theme} size={52} />
       </div>
 
       <div className="section-label">Start page</div>

@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import clsx from 'clsx'
-import { QwAppIcon } from '../glass/QwAppIcon'
+import { QwAppIcon, QwAppIconPair } from '../glass/QwAppIcon'
 import { useQwStore } from '../../store/qwStore'
 import {
   LAYOUT_META,
   ACCENT_COLORS,
+  ICON_FAMILIES,
   type ChromeLayout,
   type AccentName,
   type ThemeMode,
+  type IconVariant,
 } from '../../types/customization'
 
 function LayoutPreview({ layout }: { layout: ChromeLayout }) {
@@ -66,6 +68,7 @@ function LayoutPreview({ layout }: { layout: ChromeLayout }) {
 }
 
 const STEPS = ['Welcome', 'Layout', 'Look', 'Done'] as const
+const ICON_OPTIONS = Object.keys(ICON_FAMILIES) as IconVariant[]
 
 export function Onboarding() {
   const [step, setStep] = useState(0)
@@ -90,28 +93,33 @@ export function Onboarding() {
             <div className="qw-mark">
               <QwAppIcon variant={settings.appIcon} theme={theme} size={72} />
             </div>
-            <h1>Meet qw</h1>
+            <h1>Meet qw.</h1>
             <p>
               Extremely customizable. Still minimal. Shape the chrome the way your
               hands like — Safari, Quiche, or something quieter.
             </p>
           </div>
           <div className="onboarding-step-title">App icon</div>
-          <div className="icon-picker">
-            {(['auto', 'light', 'dark', 'glass', 'mono'] as const).map((v) => (
+          <div className="icon-family-grid">
+            {ICON_OPTIONS.map((v) => (
               <button
                 key={v}
                 type="button"
-                className={clsx('app-icon-preview', settings.appIcon === v && 'selected')}
+                className={clsx('icon-family-card', settings.appIcon === v && 'selected')}
                 onClick={() => setAppIcon(v)}
-                aria-label={v}
+                aria-label={ICON_FAMILIES[v].title}
               >
-                <QwAppIcon variant={v} theme={theme} size={64} />
+                <QwAppIconPair variant={v} size={44} />
+                <strong>
+                  {ICON_FAMILIES[v].title}
+                  {ICON_FAMILIES[v].pro ? <span className="pro-badge">PRO</span> : null}
+                </strong>
+                <span>{ICON_FAMILIES[v].subtitle}</span>
               </button>
             ))}
           </div>
           <p style={{ fontSize: 12, color: 'var(--qw-fg-secondary)', marginTop: 10 }}>
-            Auto switches with light / dark mode.
+            Each style includes light + dark — it switches with your theme.
           </p>
         </>
       )}
@@ -188,8 +196,8 @@ export function Onboarding() {
           <div className="glass glass-card" style={{ padding: 16 }}>
             <strong style={{ display: 'block', marginBottom: 6 }}>Tip</strong>
             <span style={{ color: 'var(--qw-fg-secondary)', fontSize: 14, lineHeight: 1.45 }}>
-              Long-press the settings gear later for Quick Layout. Or dive deep with
-              the full guide when you're ready to obsess (in a good way).
+              Your icon flips with light and dark mode automatically. Dive deeper
+              anytime with the full guide.
             </span>
           </div>
         </>

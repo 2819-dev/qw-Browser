@@ -44,7 +44,55 @@ export type LoadingIcon =
 
 export type StartPageContent = 'favorites' | 'blank' | 'suggestions' | 'wallpaper-only'
 
-export type IconVariant = 'auto' | 'light' | 'dark' | 'glass' | 'mono'
+/** Icon style family — each has light + dark assets that swap with theme */
+export type IconVariant =
+  | 'classic'
+  | 'gradient-blue'
+  | 'sunset'
+  | 'sky'
+  | 'gold'
+  | 'pro-mono'
+
+export const ICON_FAMILIES: Record<
+  IconVariant,
+  { title: string; subtitle: string; pro?: boolean }
+> = {
+  classic: { title: 'Classic', subtitle: 'Black / white qw.' },
+  'gradient-blue': {
+    title: 'Gradient Blue',
+    subtitle: 'Deep navy → electric blue',
+    pro: true,
+  },
+  sunset: { title: 'Sunset', subtitle: 'Rose → gold → yellow', pro: true },
+  sky: { title: 'Sky Blue', subtitle: 'Soft periwinkle glass' },
+  gold: { title: 'Gold', subtitle: 'Metallic sheen' },
+  'pro-mono': {
+    title: 'Mono Glass',
+    subtitle: 'White / dark with depth',
+    pro: true,
+  },
+}
+
+export function resolveIconSrc(
+  family: IconVariant,
+  theme: 'light' | 'dark',
+): string {
+  return `/icons/${family}-${theme}.png`
+}
+
+/** Migrate older placeholder icon ids */
+export function normalizeIconVariant(value: unknown): IconVariant {
+  const legacy: Record<string, IconVariant> = {
+    auto: 'classic',
+    light: 'classic',
+    dark: 'classic',
+    glass: 'sky',
+    mono: 'pro-mono',
+  }
+  if (typeof value === 'string' && value in ICON_FAMILIES) return value as IconVariant
+  if (typeof value === 'string' && value in legacy) return legacy[value]
+  return 'classic'
+}
 
 export type ControlSet = {
   back: boolean
@@ -103,7 +151,7 @@ export const DEFAULT_SETTINGS: QwSettings = {
   accent: 'blue',
   glassIntensity: 'medium',
   reduceMotion: false,
-  appIcon: 'auto',
+  appIcon: 'classic',
 
   chromeLayout: 'quiche-bottom',
   searchBarStyle: 'capsule',

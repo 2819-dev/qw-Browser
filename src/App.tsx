@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ACCENT_COLORS } from './types/customization'
+import { ACCENT_COLORS, resolveIconSrc } from './types/customization'
 import { useQwStore } from './store/qwStore'
 import { BrowserChrome } from './components/chrome/BrowserChrome'
 import { BrowserView } from './components/chrome/BrowserView'
@@ -20,7 +20,6 @@ function useResolvedTheme() {
         themeMode === 'system' ? (mq.matches ? 'dark' : 'light') : themeMode
       setResolvedTheme(resolved)
       document.documentElement.dataset.theme = resolved
-      // Sync theme-color / icon hint for PWA install
       const meta = document.querySelector('meta[name="theme-color"]')
       if (meta) meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f2f2f7')
     }
@@ -34,8 +33,34 @@ function useResolvedTheme() {
   }, [reduceMotion])
 }
 
+function useDynamicFavicon() {
+  const appIcon = useQwStore((s) => s.settings.appIcon)
+  const theme = useQwStore((s) => s.resolvedTheme)
+
+  useEffect(() => {
+    const href = resolveIconSrc(appIcon, theme)
+    let link = document.querySelector<HTMLLinkElement>("link[rel='icon']")
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.type = 'image/png'
+    link.href = href
+
+    let apple = document.querySelector<HTMLLinkElement>("link[rel='apple-touch-icon']")
+    if (!apple) {
+      apple = document.createElement('link')
+      apple.rel = 'apple-touch-icon'
+      document.head.appendChild(apple)
+    }
+    apple.href = href
+  }, [appIcon, theme])
+}
+
 export default function App() {
   useResolvedTheme()
+  useDynamicFavicon()
 
   const settings = useQwStore((s) => s.settings)
   const showOnboarding = useQwStore((s) => s.showOnboarding)

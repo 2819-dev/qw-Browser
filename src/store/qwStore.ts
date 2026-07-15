@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import {
   DEFAULT_SETTINGS,
+  normalizeIconVariant,
   type QwSettings,
   type ChromeLayout,
   type AccentName,
@@ -307,6 +308,7 @@ export const useQwStore = create<BrowserState>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
+          state.settings.appIcon = normalizeIconVariant(state.settings.appIcon)
           state.showOnboarding = !state.settings.onboardingComplete
         }
       },
