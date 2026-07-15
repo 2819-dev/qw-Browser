@@ -13,8 +13,19 @@ import {
 import { useEffect, useState, type FormEvent } from 'react'
 import clsx from 'clsx'
 import { Glass, GlassButton } from '../glass/Glass'
+import { QwAppIcon } from '../glass/QwAppIcon'
 import { useQwStore } from '../../store/qwStore'
 import type { ChromeLayout, SearchBarStyle } from '../../types/customization'
+
+function haptic() {
+  const on = useQwStore.getState().settings.haptics
+  if (!on) return
+  try {
+    navigator.vibrate?.(10)
+  } catch {
+    /* ignore */
+  }
+}
 
 function displayUrl(url: string) {
   if (url === 'qw://start') return ''
@@ -38,6 +49,7 @@ export function SearchBar({
   const tab = useQwStore((s) => s.activeTab())
   const navigate = useQwStore((s) => s.navigate)
   const settings = useQwStore((s) => s.settings)
+  const theme = useQwStore((s) => s.resolvedTheme)
   const [value, setValue] = useState(displayUrl(tab.url))
 
   useEffect(() => {
@@ -46,6 +58,7 @@ export function SearchBar({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
+    haptic()
     navigate(value || 'qw://start')
   }
 
@@ -63,9 +76,13 @@ export function SearchBar({
         <Lock size={13} strokeWidth={2.4} color="var(--qw-accent)" />
       )}
       {tab.url === 'qw://start' && !value && (
-        <span className="https-badge" style={{ marginRight: 2 }}>
-          qw.
-        </span>
+        <QwAppIcon
+          variant={settings.appIcon}
+          theme={theme}
+          size={18}
+          className="search-app-icon"
+          alt=""
+        />
       )}
       <input
         value={value}
@@ -91,13 +108,7 @@ export function SearchBar({
   )
 }
 
-export function ControlsBar({
-  inBlob,
-  hideSearchAdjacent,
-}: {
-  inBlob?: boolean
-  hideSearchAdjacent?: boolean
-}) {
+export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
   const tab = useQwStore((s) => s.activeTab())
   const settings = useQwStore((s) => s.settings)
   const c = settings.controls
@@ -109,61 +120,69 @@ export function ControlsBar({
   const setShowSettings = useQwStore((s) => s.setShowSettings)
   const tabs = useQwStore((s) => s.tabs)
 
-  void hideSearchAdjacent
+  const press = (fn: () => void) => () => {
+    haptic()
+    fn()
+  }
 
   return (
-    <div className={clsx('controls-row', !inBlob && 'glass glass-blob')} style={inBlob ? undefined : { padding: '6px 8px' }}>
+    <div
+      className={clsx('controls-row', !inBlob && 'glass glass-blob')}
+      style={inBlob ? undefined : { padding: '6px 8px' }}
+    >
       {c.back && (
-        <GlassButton aria-label="Back" disabled={!tab.canGoBack} onClick={goBack}>
+        <GlassButton aria-label="Back" disabled={!tab.canGoBack} onClick={press(goBack)}>
           <ArrowLeft size={20} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.forward && (
-        <GlassButton aria-label="Forward" disabled={!tab.canGoForward} onClick={goForward}>
+        <GlassButton
+          aria-label="Forward"
+          disabled={!tab.canGoForward}
+          onClick={press(goForward)}
+        >
           <ArrowRight size={20} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.reload && (
-        <GlassButton aria-label="Reload" onClick={reload}>
+        <GlassButton aria-label="Reload" onClick={press(reload)}>
           <RotateCw size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.home && (
-        <GlassButton aria-label="Home" onClick={goHome}>
+        <GlassButton aria-label="Home" onClick={press(goHome)}>
           <Home size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
       <div className="spacer" />
       {c.bookmarks && (
-        <GlassButton aria-label="Bookmarks">
+        <GlassButton aria-label="Bookmarks" onClick={() => haptic()}>
           <Bookmark size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.share && (
-        <GlassButton aria-label="Share">
+        <GlassButton
+          aria-label="Share"
+          onClick={() => {
+            haptic()
+            if (navigator.share) {
+              void navigator.share({ url: tab.url, title: tab.title }).catch(() => undefined)
+            }
+          }}
+        >
           <Share size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
       {c.tabs && (
-        <GlassButton aria-label="Tabs" onClick={() => setShowTabs(true)}>
-          <span style={{ position: 'relative', display: 'inline-grid', placeItems: 'center' }}>
+        <GlassButton aria-label="Tabs" onClick={press(() => setShowTabs(true))}>
+          <span className="tab-badge-wrap">
             <Layers size={18} strokeWidth={2.1} />
-            <span
-              style={{
-                position: 'absolute',
-                fontSize: 9,
-                fontWeight: 700,
-                bottom: -1,
-                right: -4,
-              }}
-            >
-              {tabs.length}
-            </span>
+            <span className="tab-badge">{tabs.length}</span>
           </span>
         </GlassButton>
       )}
       {c.settings && (
-        <GlassButton aria-label="Settings" onClick={() => setShowSettings(true)}>
+        <GlassButton aria-label="Settings" onClick={press(() => setShowSettings(true))}>
           <Settings size={18} strokeWidth={2.1} />
         </GlassButton>
       )}
@@ -176,44 +195,50 @@ function UnifiedBlob({ position }: { position: 'top' | 'bottom' }) {
   return (
     <div className={`chrome-layer chrome-${position}`}>
       <Glass className="glass-blob unified-blob" strong>
-        {position === 'top' ? (
-          <>
-            <SearchBar style={style} inBlob />
-            <ControlsBar inBlob />
-          </>
-        ) : (
-          <>
-            <SearchBar style={style} inBlob />
-            <ControlsBar inBlob />
-          </>
-        )}
+        <SearchBar style={style} inBlob />
+        <ControlsBar inBlob />
       </Glass>
     </div>
   )
 }
 
-/** Floating access for layouts without a controls row */
 function QuietAccess() {
   const setShowSettings = useQwStore((s) => s.setShowSettings)
   const setShowTabs = useQwStore((s) => s.setShowTabs)
   const tabs = useQwStore((s) => s.tabs)
+  const settings = useQwStore((s) => s.settings)
+  const showTabs = settings.controls.tabs
+  const showSettingsBtn = settings.controls.settings
+  if (!showTabs && !showSettingsBtn) return null
+
   return (
-    <div
-      className="chrome-layer chrome-top"
-      style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}
-    >
-      <Glass className="glass-pill" style={{ display: 'flex', padding: 4, gap: 2 }}>
-        <GlassButton aria-label="Tabs" onClick={() => setShowTabs(true)}>
-          <span style={{ position: 'relative', display: 'inline-grid', placeItems: 'center' }}>
-            <Layers size={18} strokeWidth={2.1} />
-            <span style={{ position: 'absolute', fontSize: 9, fontWeight: 700, bottom: -1, right: -4 }}>
-              {tabs.length}
+    <div className="chrome-layer chrome-top quiet-access">
+      <Glass className="glass-pill quiet-pill">
+        {showTabs && (
+          <GlassButton
+            aria-label="Tabs"
+            onClick={() => {
+              haptic()
+              setShowTabs(true)
+            }}
+          >
+            <span className="tab-badge-wrap">
+              <Layers size={18} strokeWidth={2.1} />
+              <span className="tab-badge">{tabs.length}</span>
             </span>
-          </span>
-        </GlassButton>
-        <GlassButton aria-label="Settings" onClick={() => setShowSettings(true)}>
-          <Settings size={18} strokeWidth={2.1} />
-        </GlassButton>
+          </GlassButton>
+        )}
+        {showSettingsBtn && (
+          <GlassButton
+            aria-label="Settings"
+            onClick={() => {
+              haptic()
+              setShowSettings(true)
+            }}
+          >
+            <Settings size={18} strokeWidth={2.1} />
+          </GlassButton>
+        )}
       </Glass>
     </div>
   )
@@ -274,7 +299,7 @@ export function BrowserChrome() {
       return (
         <>
           <QuietAccess />
-          <div className="chrome-layer chrome-bottom" style={{ paddingLeft: 28, paddingRight: 28 }}>
+          <div className="chrome-layer chrome-bottom chrome-minimal">
             <SearchBar style={style} compact />
           </div>
         </>
@@ -284,23 +309,22 @@ export function BrowserChrome() {
   }
 }
 
-/** Content padding so pages aren't hidden under chrome */
 export function useChromeInsets(layout: ChromeLayout) {
   switch (layout) {
     case 'safari':
-      return { top: 72, bottom: 72 }
+      return { top: 78, bottom: 78 }
     case 'quiche-bottom':
-      return { top: 12, bottom: 128 }
+      return { top: 16, bottom: 138 }
     case 'quiche-top':
-      return { top: 128, bottom: 12 }
+      return { top: 138, bottom: 16 }
     case 'inverted':
     case 'controls-top':
-      return { top: 72, bottom: 72 }
+      return { top: 78, bottom: 78 }
     case 'search-only':
-      return { top: 12, bottom: 72 }
+      return { top: 64, bottom: 78 }
     case 'minimal':
-      return { top: 12, bottom: 72 }
+      return { top: 64, bottom: 78 }
     default:
-      return { top: 12, bottom: 128 }
+      return { top: 16, bottom: 138 }
   }
 }

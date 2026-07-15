@@ -8,6 +8,8 @@ import {
   Layers,
 } from 'lucide-react'
 import { LAYOUT_META, type ChromeLayout } from '../../types/customization'
+import { QwAppIcon } from '../glass/QwAppIcon'
+import { useQwStore } from '../../store/qwStore'
 
 const LAYOUT_ORDER: ChromeLayout[] = [
   'quiche-bottom',
@@ -20,9 +22,11 @@ const LAYOUT_ORDER: ChromeLayout[] = [
 ]
 
 function PreviewSearch({ compact }: { compact?: boolean }) {
+  const appIcon = useQwStore((s) => s.settings.appIcon)
+  const theme = useQwStore((s) => s.resolvedTheme)
   return (
     <div className={clsx('live-search', compact && 'compact')}>
-      <span className="live-search-qw">qw.</span>
+      <QwAppIcon variant={appIcon} theme={theme} size={12} alt="" />
       <span className="live-search-ph">Search or enter address</span>
     </div>
   )
@@ -53,11 +57,14 @@ function PreviewTogether({ top }: { top?: boolean }) {
 
 /** Realistic mini phone preview of the selected layout */
 export function LiveLayoutPreview({ layout }: { layout: ChromeLayout }) {
+  const appIcon = useQwStore((s) => s.settings.appIcon)
+  const theme = useQwStore((s) => s.resolvedTheme)
+
   return (
     <div className="live-phone" aria-hidden>
       <div className="live-phone-screen">
         <div className="live-start">
-          <div className="live-wordmark">qw.</div>
+          <QwAppIcon variant={appIcon} theme={theme} size={36} alt="" />
         </div>
 
         {(layout === 'quiche-bottom' || layout === 'quiche-top') && (

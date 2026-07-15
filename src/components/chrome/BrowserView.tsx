@@ -30,8 +30,8 @@ export function BrowserView() {
     <div
       className="browser-content"
       style={{
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
+        paddingTop: `calc(${insets.top}px + var(--qw-safe-top))`,
+        paddingBottom: `calc(${insets.bottom}px + var(--qw-safe-bottom))`,
       }}
     >
       {isStart ? (
@@ -43,6 +43,7 @@ export function BrowserView() {
               key={`${tab.id}-${reloadNonce}`}
               src={iframeSrc}
               title={tab.title}
+              className="page-frame"
               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
               referrerPolicy="no-referrer-when-downgrade"
               onLoad={() => {
@@ -57,7 +58,6 @@ export function BrowserView() {
               onError={() => setTabLoading(false)}
             />
           )}
-          {/* Soft fallback note for XFO/CSP blocked embeds */}
           <noscript>Enable JavaScript to browse.</noscript>
         </>
       )}

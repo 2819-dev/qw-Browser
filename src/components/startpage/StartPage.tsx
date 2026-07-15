@@ -1,5 +1,6 @@
 import { WALLPAPER_META, type WallpaperId } from '../../types/customization'
 import { useQwStore } from '../../store/qwStore'
+import { QwAppIcon } from '../glass/QwAppIcon'
 
 function hostLabel(url: string) {
   try {
@@ -31,12 +32,19 @@ export function StartPage() {
       className="start-page clean"
       data-on-dark={onDarkArt ? 'true' : 'false'}
       style={{
-        background:
-          settings.wallpaper === 'none' ? 'var(--qw-bg)' : wallpaper.css,
+        background: settings.wallpaper === 'none' ? undefined : wallpaper.css,
       }}
     >
       {settings.showQwWordmark && settings.startPageContent !== 'wallpaper-only' && (
-        <div className="wordmark">qw.</div>
+        <div className="brand-mark">
+          <QwAppIcon
+            variant={settings.appIcon}
+            theme={theme}
+            size={88}
+            className="brand-app-icon"
+            alt="qw"
+          />
+        </div>
       )}
 
       {settings.startPageContent === 'favorites' && (
@@ -66,11 +74,17 @@ export function StartPage() {
 export function LoadingOverlay() {
   const loading = useQwStore((s) => s.activeTab().loading)
   const icon = useQwStore((s) => s.settings.loadingIcon)
+  const appIcon = useQwStore((s) => s.settings.appIcon)
+  const theme = useQwStore((s) => s.resolvedTheme)
   if (!loading) return null
 
   return (
     <div className="loading-overlay" aria-hidden>
-      {icon === 'qw' && <div className="loader-qw" />}
+      {icon === 'qw' && (
+        <div className="loader-app-icon">
+          <QwAppIcon variant={appIcon} theme={theme} size={40} alt="" />
+        </div>
+      )}
       {icon === 'spinner' && <div className="loader-spinner" />}
       {icon === 'dots' && (
         <div className="loader-dots">

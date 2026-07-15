@@ -21,7 +21,9 @@ function useResolvedTheme() {
       setResolvedTheme(resolved)
       document.documentElement.dataset.theme = resolved
       const meta = document.querySelector('meta[name="theme-color"]')
-      if (meta) meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f2f2f7')
+      if (meta) {
+        meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f5f5f7')
+      }
     }
     apply()
     mq.addEventListener('change', apply)
@@ -38,29 +40,51 @@ function useDynamicFavicon() {
   const theme = useQwStore((s) => s.resolvedTheme)
 
   useEffect(() => {
-    const href = resolveIconSrc(appIcon, theme)
-    let link = document.querySelector<HTMLLinkElement>("link[rel='icon']")
-    if (!link) {
-      link = document.createElement('link')
-      link.rel = 'icon'
-      document.head.appendChild(link)
+    const href = `${resolveIconSrc(appIcon, theme)}?v=${appIcon}-${theme}`
+    const ensure = (rel: string) => {
+      let link = document.querySelector<HTMLLinkElement>(`link[rel='${rel}']`)
+      if (!link) {
+        link = document.createElement('link')
+        link.rel = rel
+        document.head.appendChild(link)
+      }
+      link.type = 'image/png'
+      link.href = href
+      return link
     }
-    link.type = 'image/png'
-    link.href = href
-
-    let apple = document.querySelector<HTMLLinkElement>("link[rel='apple-touch-icon']")
-    if (!apple) {
-      apple = document.createElement('link')
-      apple.rel = 'apple-touch-icon'
-      document.head.appendChild(apple)
-    }
-    apple.href = href
+    ensure('icon')
+    ensure('apple-touch-icon')
+    document
+      .querySelectorAll("link[rel='apple-touch-icon'][media]")
+      .forEach((el) => el.remove())
   }, [appIcon, theme])
+}
+
+function useFullscreenShell() {
+  useEffect(() => {
+    const root = document.documentElement
+    const sync = () => {
+      const standalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        ('standalone' in navigator &&
+          Boolean((navigator as Navigator & { standalone?: boolean }).standalone))
+      root.dataset.standalone = standalone ? 'true' : 'false'
+      root.style.setProperty('--qw-vh', `${window.innerHeight}px`)
+    }
+    sync()
+    window.addEventListener('resize', sync)
+    window.addEventListener('orientationchange', sync)
+    return () => {
+      window.removeEventListener('resize', sync)
+      window.removeEventListener('orientationchange', sync)
+    }
+  }, [])
 }
 
 export default function App() {
   useResolvedTheme()
   useDynamicFavicon()
+  useFullscreenShell()
 
   const settings = useQwStore((s) => s.settings)
   const showOnboarding = useQwStore((s) => s.showOnboarding)
@@ -69,7 +93,12 @@ export default function App() {
   const showFullGuide = useQwStore((s) => s.showFullGuide)
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--qw-accent', ACCENT_COLORS[settings.accent])
+    const accent = ACCENT_COLORS[settings.accent]
+    document.documentElement.style.setProperty('--qw-accent', accent)
+    document.documentElement.style.setProperty(
+      '--qw-accent-soft',
+      `color-mix(in srgb, ${accent} 22%, transparent)`,
+    )
     document.documentElement.dataset.glass = settings.glassIntensity
   }, [settings.accent, settings.glassIntensity])
 
@@ -77,6 +106,7 @@ export default function App() {
     <div className="qw-app">
       <div className="phone-frame" data-layout={settings.chromeLayout}>
         <div className="browser-shell">
+          <div className="glass-atmosphere" aria-hidden />
           <BrowserView />
           <BrowserChrome />
           {showSettings && <SettingsSheet />}

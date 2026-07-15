@@ -196,7 +196,7 @@ export function SettingsSheet() {
 
       <div className="section-label">App icon</div>
       <p style={{ fontSize: 12, color: 'var(--qw-fg-secondary)', margin: '0 0 10px' }}>
-        Light and dark versions swap with your theme.
+        Changes the icon inside qw right away. Light/dark swap with theme.
       </p>
       <div className="icon-family-grid">
         {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
@@ -216,9 +216,17 @@ export function SettingsSheet() {
           </button>
         ))}
       </div>
-      <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 12, color: 'var(--qw-fg-secondary)' }}>Now</span>
-        <QwAppIcon variant={settings.appIcon} theme={theme} size={52} />
+      <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <QwAppIcon variant={settings.appIcon} theme={theme} size={64} />
+        <div>
+          <strong style={{ display: 'block', fontSize: 14 }}>
+            {ICON_FAMILIES[settings.appIcon].title}
+          </strong>
+          <p className="icon-apply-note">
+            Used on the start page, search bar, and tab icon. Home Screen icons update after you
+            remove & Add to Home Screen again.
+          </p>
+        </div>
       </div>
 
       <div className="section-label">Start page</div>
@@ -304,7 +312,8 @@ export function SettingsSheet() {
         </div>
         <div className="settings-row">
           <div className="label">
-            <strong>Show qw wordmark</strong>
+            <strong>Show app icon</strong>
+            <span>Big icon on the start page</span>
           </div>
           <Toggle
             on={settings.showQwWordmark}
@@ -317,6 +326,16 @@ export function SettingsSheet() {
             <span>When available on device</span>
           </div>
           <Toggle on={settings.haptics} onChange={(v) => setSetting('haptics', v)} />
+        </div>
+        <div className="settings-row">
+          <div className="label">
+            <strong>Reduce motion</strong>
+            <span>Turn off animations</span>
+          </div>
+          <Toggle
+            on={settings.reduceMotion}
+            onChange={(v) => setSetting('reduceMotion', v)}
+          />
         </div>
       </div>
 
