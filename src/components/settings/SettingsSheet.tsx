@@ -9,6 +9,7 @@ import {
   ACCENT_COLORS,
   WALLPAPER_META,
   ICON_FAMILIES,
+  VISUAL_STYLES,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -17,6 +18,7 @@ import {
   type StartPageContent,
   type ThemeMode,
   type IconVariant,
+  type VisualStyle,
 } from '../../types/customization'
 
 function SheetShell({
@@ -63,6 +65,7 @@ export function SettingsSheet() {
   const setGlassIntensity = useQwStore((s) => s.setGlassIntensity)
   const setLoadingIcon = useQwStore((s) => s.setLoadingIcon)
   const setAppIcon = useQwStore((s) => s.setAppIcon)
+  const setVisualStyle = useQwStore((s) => s.setVisualStyle)
   const setStartPageContent = useQwStore((s) => s.setStartPageContent)
   const setControl = useQwStore((s) => s.setControl)
   const setSetting = useQwStore((s) => s.setSetting)
@@ -107,6 +110,32 @@ export function SettingsSheet() {
         onChange={setChromeLayout}
         compact
       />
+
+      <div className="section-label">Visual style</div>
+      <div className="style-pick-list">
+        {(Object.keys(VISUAL_STYLES) as VisualStyle[]).map((key) => (
+          <button
+            key={key}
+            type="button"
+            className={clsx(
+              'style-pick-card',
+              `preview-${key}`,
+              settings.visualStyle === key && 'selected',
+            )}
+            onClick={() => setVisualStyle(key)}
+          >
+            <div className="style-pick-swatch" aria-hidden>
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="style-pick-copy">
+              <strong>{VISUAL_STYLES[key].title}</strong>
+              <span>{VISUAL_STYLES[key].subtitle}</span>
+            </div>
+          </button>
+        ))}
+      </div>
 
       <div className="section-label">Search bar</div>
       <div className="chip-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>

@@ -7,6 +7,7 @@ import {
   ACCENT_COLORS,
   WALLPAPER_META,
   ICON_FAMILIES,
+  VISUAL_STYLES,
   type AccentName,
   type WallpaperId,
   type LoadingIcon,
@@ -15,9 +16,11 @@ import {
   type StartPageContent,
   type ThemeMode,
   type IconVariant,
+  type VisualStyle,
 } from '../../types/customization'
 
 const GUIDE_STEPS = [
+  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass, Classic, or Cyber.' },
   { id: 'icon', title: 'App icon', blurb: 'Pick a style — light and dark versions swap with your theme.' },
   { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and blur intensity.' },
   { id: 'accent', title: 'Accent color', blurb: 'Tint buttons, badges, and highlights.' },
@@ -43,6 +46,7 @@ export function FullCustomizationGuide() {
   const setGlassIntensity = useQwStore((s) => s.setGlassIntensity)
   const setLoadingIcon = useQwStore((s) => s.setLoadingIcon)
   const setAppIcon = useQwStore((s) => s.setAppIcon)
+  const setVisualStyle = useQwStore((s) => s.setVisualStyle)
   const setStartPageContent = useQwStore((s) => s.setStartPageContent)
   const setControl = useQwStore((s) => s.setControl)
   const setSetting = useQwStore((s) => s.setSetting)
@@ -77,6 +81,33 @@ export function FullCustomizationGuide() {
         <h1>{current.title}</h1>
         <p>{current.blurb}</p>
       </div>
+
+      {current.id === 'style' && (
+        <div className="style-pick-list">
+          {(Object.keys(VISUAL_STYLES) as VisualStyle[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={clsx(
+                'style-pick-card',
+                `preview-${key}`,
+                settings.visualStyle === key && 'selected',
+              )}
+              onClick={() => setVisualStyle(key)}
+            >
+              <div className="style-pick-swatch" aria-hidden>
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="style-pick-copy">
+                <strong>{VISUAL_STYLES[key].title}</strong>
+                <span>{VISUAL_STYLES[key].subtitle}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
 
       {current.id === 'icon' && (
         <div className="icon-family-grid">

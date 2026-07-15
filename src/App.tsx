@@ -93,14 +93,18 @@ export default function App() {
   const showFullGuide = useQwStore((s) => s.showFullGuide)
 
   useEffect(() => {
-    const accent = ACCENT_COLORS[settings.accent]
+    const accent =
+      settings.visualStyle === 'cyber' && settings.accent === 'mono'
+        ? '#00F0FF'
+        : ACCENT_COLORS[settings.accent]
     document.documentElement.style.setProperty('--qw-accent', accent)
     document.documentElement.style.setProperty(
       '--qw-accent-soft',
       `color-mix(in srgb, ${accent} 22%, transparent)`,
     )
     document.documentElement.dataset.glass = settings.glassIntensity
-  }, [settings.accent, settings.glassIntensity])
+    document.documentElement.dataset.style = settings.visualStyle
+  }, [settings.accent, settings.glassIntensity, settings.visualStyle])
 
   return (
     <div className="qw-app">

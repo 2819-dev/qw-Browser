@@ -13,6 +13,27 @@ export type SearchBarStyle = 'pill' | 'rounded' | 'square' | 'capsule'
 
 export type GlassIntensity = 'subtle' | 'medium' | 'strong'
 
+/** Overall UI look */
+export type VisualStyle = 'liquid-glass' | 'classic' | 'cyber'
+
+export const VISUAL_STYLES: Record<
+  VisualStyle,
+  { title: string; subtitle: string }
+> = {
+  'liquid-glass': {
+    title: 'Liquid Glass',
+    subtitle: 'Frosted, soft, Apple-like blur',
+  },
+  classic: {
+    title: 'Classic',
+    subtitle: 'Clean solids. Simple and clear',
+  },
+  cyber: {
+    title: 'Cyber',
+    subtitle: 'Neon, glow, gamer energy',
+  },
+}
+
 export type AccentName =
   | 'blue'
   | 'indigo'
@@ -112,6 +133,7 @@ export type QwSettings = {
 
   // Appearance
   themeMode: ThemeMode
+  visualStyle: VisualStyle
   accent: AccentName
   glassIntensity: GlassIntensity
   reduceMotion: boolean
@@ -148,6 +170,7 @@ export const DEFAULT_SETTINGS: QwSettings = {
   fullGuideComplete: false,
 
   themeMode: 'system',
+  visualStyle: 'liquid-glass',
   accent: 'mono',
   glassIntensity: 'medium',
   reduceMotion: false,

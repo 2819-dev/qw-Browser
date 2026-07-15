@@ -12,6 +12,7 @@ import {
   type SearchBarStyle,
   type GlassIntensity,
   type IconVariant,
+  type VisualStyle,
   type StartPageContent,
   type ControlSet,
 } from '../types/customization'
@@ -49,6 +50,7 @@ type BrowserState = {
   setThemeMode: (mode: ThemeMode) => void
   setSearchBarStyle: (style: SearchBarStyle) => void
   setGlassIntensity: (intensity: GlassIntensity) => void
+  setVisualStyle: (style: VisualStyle) => void
   setAppIcon: (variant: IconVariant) => void
   setStartPageContent: (content: StartPageContent) => void
   setControl: (key: keyof ControlSet, value: boolean) => void
@@ -152,6 +154,9 @@ export const useQwStore = create<BrowserState>()(
 
       setGlassIntensity: (glassIntensity) =>
         set((s) => ({ settings: { ...s.settings, glassIntensity } })),
+
+      setVisualStyle: (visualStyle) =>
+        set((s) => ({ settings: { ...s.settings, visualStyle } })),
 
       setAppIcon: (appIcon) => set((s) => ({ settings: { ...s.settings, appIcon } })),
 
@@ -301,7 +306,7 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v2',
+      name: 'qw-browser-v3',
       partialize: (s) => ({
         settings: s.settings,
         // keep last tab url lightly — but tabs reset soft for demo safety
@@ -309,6 +314,9 @@ export const useQwStore = create<BrowserState>()(
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.settings.appIcon = normalizeIconVariant(state.settings.appIcon)
+          if (!state.settings.visualStyle) {
+            state.settings.visualStyle = 'liquid-glass'
+          }
           state.showOnboarding = !state.settings.onboardingComplete
         }
       },
