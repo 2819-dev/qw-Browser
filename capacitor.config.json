@@ -1,0 +1,14 @@
+{
+  "appId": "dev.qw.browser",
+  "appName": "qw",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "backgroundColor": "#000000"
+    }
+  }
+}
