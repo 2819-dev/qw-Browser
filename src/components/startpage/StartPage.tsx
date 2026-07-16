@@ -67,6 +67,14 @@ export function StartPage() {
       )}
 
       {settings.startPageContent === 'blank' && null}
+
+      <button
+        type="button"
+        className="games-entry"
+        onClick={() => navigate('qw://games')}
+      >
+        qw://games
+      </button>
     </div>
   )
 }

@@ -29,6 +29,7 @@ function haptic() {
 
 function displayUrl(url: string) {
   if (url === 'qw://start') return ''
+  if (url.startsWith('qw://')) return url
   try {
     const u = new URL(url)
     return u.host + (u.pathname === '/' ? '' : u.pathname) + u.search

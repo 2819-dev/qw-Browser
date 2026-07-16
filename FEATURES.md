@@ -66,7 +66,7 @@ Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page*
 
 | Feature | Status | Notes |
 |--------|--------|--------|
-| `qw://games` hub | Planned | Mini-games only on qw |
+| `qw://games` hub | Done | Reflex, Memory, Pulse — powered by XP / achievements |
 | Achievements → level / power-ups | Foundation | XP + unlocks already tracked |
 | Visit 100 Sites, etc. | Wired | Unlocks feed future game buffs |
 | Cross-site qw:// deep links | Planned | e.g. `qw://games`, profile badge |

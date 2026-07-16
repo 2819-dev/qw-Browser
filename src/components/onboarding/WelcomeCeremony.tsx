@@ -84,7 +84,7 @@ export function WelcomeCeremony() {
           </button>
         </div>
         <p className="welcome-foot">
-          Later: qw://games — earn achievements like Visit 100 Sites for in-game power-ups.
+          Open qw://games anytime — Reflex, Memory, Pulse. Achievements power up your play.
         </p>
       </div>
     </div>

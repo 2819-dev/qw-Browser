@@ -166,6 +166,9 @@ export type AchievementId =
   | 'tab-hopper'
   | 'explorer-10'
   | 'explorer-100'
+  | 'gamer'
+  | 'reflex-pro'
+  | 'memory-master'
 
 export type AchievementDef = {
   id: AchievementId
@@ -211,7 +214,36 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Visit 100 sites — for qw://games power',
     xp: 250,
   },
+  {
+    id: 'gamer',
+    title: 'Gamer',
+    description: 'Opened qw://games',
+    xp: 30,
+  },
+  {
+    id: 'reflex-pro',
+    title: 'Reflex Pro',
+    description: 'Scored 8+ in Reflex',
+    xp: 60,
+  },
+  {
+    id: 'memory-master',
+    title: 'Memory Master',
+    description: 'Cleared Memory in under 40 moves',
+    xp: 80,
+  },
 ]
+
+export function isQwInternal(url: string) {
+  return url === 'qw://start' || url === 'qw://games' || url.startsWith('qw://')
+}
+
+export function titleForQwUrl(url: string) {
+  if (url === 'qw://start') return 'Start'
+  if (url === 'qw://games') return 'Games'
+  if (url.startsWith('qw://')) return url.replace('qw://', '')
+  return 'New Tab'
+}
 
 export type QwSettings = {
   onboardingComplete: boolean
@@ -415,4 +447,23 @@ export const SEARCH_ENGINE_URLS: Record<QwSettings['searchEngine'], string> = {
 
 export function levelFromXp(xp: number) {
   return Math.floor(xp / 100) + 1
+}
+
+/** Power-ups for qw://games from level + achievements */
+export function gamePowerUps(
+  xp: number,
+  unlocked: AchievementId[],
+): { level: number; reflexWindowMs: number; memoryPeekMs: number; scoreBonus: number } {
+  const level = levelFromXp(xp)
+  const explorerBoost = unlocked.includes('explorer-100')
+    ? 1.25
+    : unlocked.includes('explorer-10')
+      ? 1.1
+      : 1
+  return {
+    level,
+    reflexWindowMs: Math.max(420, 900 - level * 40),
+    memoryPeekMs: Math.min(1800, 700 + level * 80) * explorerBoost,
+    scoreBonus: Math.floor(level / 2) + (unlocked.includes('welcome') ? 1 : 0),
+  }
 }

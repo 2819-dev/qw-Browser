@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { StartPage, LoadingOverlay } from '../startpage/StartPage'
+import { GamesPage } from '../games/GamesPage'
 import { useQwStore } from '../../store/qwStore'
 import { useChromeInsets } from '../chrome/BrowserChrome'
+import { isQwInternal } from '../../types/customization'
 
 export function BrowserView() {
   const tab = useQwStore((s) => s.activeTab())
@@ -11,20 +13,20 @@ export function BrowserView() {
   const insets = useChromeInsets(layout)
   const [reloadNonce, setReloadNonce] = useState(0)
 
-  // Detect reload pulses (loading flipped true on same url)
   useEffect(() => {
-    if (tab.loading && tab.url !== 'qw://start') {
+    if (tab.loading && !isQwInternal(tab.url)) {
       setReloadNonce((n) => n + 1)
     }
   }, [tab.loading, tab.url])
 
   const isStart = tab.url === 'qw://start'
+  const isGames = tab.url === 'qw://games'
+  const isInternal = isQwInternal(tab.url)
 
   const iframeSrc = useMemo(() => {
-    if (isStart) return null
-    // Some sites block iframe embedding; we still navigate and show chrome.
+    if (isInternal) return null
     return tab.url
-  }, [isStart, tab.url, reloadNonce])
+  }, [isInternal, tab.url, reloadNonce])
 
   return (
     <div
@@ -36,6 +38,8 @@ export function BrowserView() {
     >
       {isStart ? (
         <StartPage />
+      ) : isGames ? (
+        <GamesPage />
       ) : (
         <>
           {iframeSrc && (

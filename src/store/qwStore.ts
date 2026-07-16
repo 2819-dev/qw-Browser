@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware'
 import {
   DEFAULT_SETTINGS,
   normalizeIconVariant,
+  titleForQwUrl,
+  isQwInternal,
   type QwSettings,
   type ChromeLayout,
   type AccentName,
@@ -97,7 +99,7 @@ function uid() {
 function makeTab(url = 'qw://start'): Tab {
   return {
     id: uid(),
-    title: url === 'qw://start' ? 'Start' : 'New Tab',
+    title: titleForQwUrl(url),
     url,
     loading: false,
     canGoBack: false,
@@ -326,15 +328,25 @@ export const useQwStore = create<BrowserState>()(
       navigate: (input) => {
         const { settings, activeTabId, tabs } = get()
         const url = normalizeUrl(input, settings.searchEngine)
+        const internal = isQwInternal(url)
         set({
           tabs: tabs.map((t) => {
             if (t.id !== activeTabId) return t
             const history = [...t.history.slice(0, t.historyIndex + 1), url]
+            let title = t.title
+            if (internal) title = titleForQwUrl(url)
+            else if (url.startsWith('http')) {
+              try {
+                title = new URL(url).hostname.replace(/^www\./, '')
+              } catch {
+                title = 'Page'
+              }
+            }
             return {
               ...t,
               url,
-              title: url === 'qw://start' ? 'Start' : new URL(url.startsWith('http') ? url : 'https://example.com').hostname,
-              loading: url !== 'qw://start',
+              title,
+              loading: !internal,
               history,
               historyIndex: history.length - 1,
               canGoBack: history.length > 1,
@@ -343,6 +355,7 @@ export const useQwStore = create<BrowserState>()(
           }),
         })
         if (url.startsWith('http')) get().recordSiteVisit(url)
+        if (url === 'qw://games') get().unlockAchievement('gamer')
       },
 
       goBack: () => {
@@ -358,8 +371,8 @@ export const useQwStore = create<BrowserState>()(
               historyIndex,
               canGoBack: historyIndex > 0,
               canGoForward: true,
-              loading: url !== 'qw://start',
-              title: url === 'qw://start' ? 'Start' : t.title,
+              loading: !isQwInternal(url),
+              title: isQwInternal(url) ? titleForQwUrl(url) : t.title,
             }
           }),
         })
@@ -378,7 +391,8 @@ export const useQwStore = create<BrowserState>()(
               historyIndex,
               canGoBack: true,
               canGoForward: historyIndex < t.history.length - 1,
-              loading: url !== 'qw://start',
+              loading: !isQwInternal(url),
+              title: isQwInternal(url) ? titleForQwUrl(url) : t.title,
             }
           }),
         })
@@ -388,10 +402,9 @@ export const useQwStore = create<BrowserState>()(
         const { activeTabId, tabs } = get()
         set({
           tabs: tabs.map((t) =>
-            t.id === activeTabId && t.url !== 'qw://start' ? { ...t, loading: true } : t,
+            t.id === activeTabId && !isQwInternal(t.url) ? { ...t, loading: true } : t,
           ),
         })
-        // Force iframe remount via tiny query bounce handled in BrowserView
         setTimeout(() => {
           const state = get()
           set({
