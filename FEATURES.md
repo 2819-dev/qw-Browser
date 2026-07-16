@@ -1,6 +1,8 @@
 # qw — Feature priorities
 
-Core design: clean, minimal **Apple Liquid Glass** — sharp frosted refraction, not mushy rounded AI UI. Classic is solid opaque bars (no blur). Cyber is optional neon.
+Core design: clean, minimal **Apple Liquid Glass** — frosted refraction, continuous curves, quiet chrome. Classic is solid opaque bars (no blur). Cyber is optional neon.
+
+No AI features in the shell.
 
 ---
 
@@ -9,30 +11,30 @@ Core design: clean, minimal **Apple Liquid Glass** — sharp frosted refraction,
 | Feature | Status | Notes |
 |--------|--------|--------|
 | Minimal onboarding | Done | Welcome → Look → Place → Guide |
-| Visual styles | Done | Liquid Glass / Classic / Cyber — must read differently |
+| Visual styles | Done | Liquid Glass / Classic / Cyber |
 | Layout picker + live preview | Done | Bottom / top / split / floating, etc. |
 | Interactive feature tour | Done | Search → site nav → tabs → settings → optional full guide |
 | Default UI font | Done | System / Rounded / Serif / Mono / Condensed / Cyber |
 | Quiet B&W chrome | Done | Color reserved for Cyber (+ optional accents) |
 | Welcome badge + XP | Done | Finish tour → animation → saveable badge |
-| Achievements foundation | Done | Welcome, First Search, Customizer, Tab Hopper, Explorer I/II |
+| Achievements foundation | Done | Welcome, First Search, Customizer, Tab Hopper, Explorer, Games |
 
 Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page**
 
 ---
 
-## Priority 1 — Core browsing (basic, in progress)
+## Priority 1 — Core browsing
 
 | Feature | Status | Notes |
 |--------|--------|--------|
 | Address / search bar | Done | Engines: DDG, Google, Bing, Ecosia, Brave |
-| Tabs (open / close / switch) | Done | |
+| Tabs (open / close / switch) | Done | Persisted across relaunches |
 | Back / forward / reload | Done | |
 | Start page (`qw://start`) | Done | Blank / favorites / suggestions / wallpaper |
-| Settings sheet | Done | Full customization surface |
+| Settings sheet | Done | Full surface including behavior + comfort |
 | Bookmarks (save current) | Basic | Toggle current page onto start shortcuts |
 | HTTPS badge | Done | |
-| Haptics / reduce motion | Done | |
+| Haptics / reduce motion | Done | Capacitor Haptics on native |
 
 ---
 
@@ -43,39 +45,41 @@ Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page*
 | Chrome layouts | Done | 7 layouts |
 | Glass intensity | Done | Liquid Glass only |
 | Accents + theme | Done | Light / dark / system |
-| App icon families | Done | Light/dark auto-swap |
+| In-app icon families | Done | Light/dark auto-swap |
 | Wallpapers | Done | |
 | Loading indicators | Done | |
-| Full Customization Guide | Done | Separate longer walkthrough |
+| Full Customization Guide | Done | Style → comfort (14 steps) — every setting reachable |
+| Behavior toggles | Done | Expanded URL, new tab, confirm close, clear on exit, hints |
+| Factory reset | Done | Reset customization + Clear all data |
 | Replay feature tour | Done | From Settings |
 
 ---
 
-## Priority 3 — Native & platform
+## Priority 3 — Native & App Store
 
 | Feature | Status | Notes |
 |--------|--------|--------|
-| Capacitor shell | Config | WebView on iOS/Android |
-| Real WKWebView / System WebView | Next | Replace iframe for real browsing |
-| Home Screen icons (light/dark) | Partial | Favicon + PWA; true icons need native assets |
-| Share sheet | Basic | Uses Web Share API when available |
+| Capacitor shell | Done | `ios/` project + plugins |
+| PrivacyInfo.xcprivacy | Done | UserDefaults CA92.1, no tracking |
+| Flat App Store icon | Done | `public/appstore/AppIcon-1024.png` |
+| Publishing checklist | Done | See [PUBLISHING.md](./PUBLISHING.md) |
+| Real WKWebView for pages | Next | Ship build must replace iframe (Guideline 2.5.6) |
+| Home Screen icons | Partial | In-app icons done; alternate icons need Xcode |
 
 ---
 
-## Priority 4 — `qw://` surfaces & games (future)
+## Priority 4 — `qw://` surfaces & games
 
 | Feature | Status | Notes |
 |--------|--------|--------|
-| `qw://games` hub | Done | Offline Reflex / Memory / Pulse + 3D preview teaser |
-| Extension store | Done | Online `qw://extensions` + desktop `/developer` submit → approve |
-| Achievements → level / power-ups | Foundation | XP + unlocks already tracked |
-| Visit 100 Sites, etc. | Wired | Unlocks feed future game buffs |
-| Cross-site qw:// deep links | Planned | e.g. `qw://games`, profile badge |
+| `qw://games` hub | Done | Offline Reflex / Memory / Pulse + 3D teaser |
+| Extension store | Done | Online catalog + `/developer` submit → approve |
+| Achievements → level / power-ups | Done | XP unlocks game buffs |
 
 ---
 
-## Explicit non-goals (for now)
+## Explicit non-goals
 
-- Desktop browser chrome (aside from the /developer portal)
+- AI chat / AI customization API inside the shell
 - Account sync
-- Heavy AI chat chrome in the shell
+- Desktop browser chrome (aside from `/developer`)

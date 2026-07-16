@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    qw browser — Apple Privacy Manifest (PrivacyInfo.xcprivacy)
+
+    Required by App Store as of May 1, 2024 for apps that use any of the
+    "required reason" APIs (UserDefaults, File timestamp, System boot time,
+    Disk space, Active keyboard). Capacitor + WKWebView typically read
+    UserDefaults, so we declare that reason and no others.
+
+    If new SDKs are added that access more required-reason APIs, extend
+    NSPrivacyAccessedAPITypes accordingly.
+  -->
+
+  <!-- We do not track users across apps/websites. -->
+  <key>NSPrivacyTracking</key>
+  <false/>
+
+  <!-- No tracking domains. -->
+  <key>NSPrivacyTrackingDomains</key>
+  <array/>
+
+  <!-- No data is collected from the app. All browsing state stays on-device. -->
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array/>
+
+  <!-- Required-reason API usage. -->
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array>
+    <dict>
+      <!-- User Defaults (NSUserDefaults) -->
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <!-- CA92.1 — Access info from same app, per its documentation. -->
+        <string>CA92.1</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>

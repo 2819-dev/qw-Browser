@@ -16,19 +16,17 @@ import { Glass, GlassButton } from '../glass/Glass'
 import { QwAppIcon } from '../glass/QwAppIcon'
 import { useQwStore } from '../../store/qwStore'
 import { hasExtensionEffect } from '../../lib/extensionCatalog'
+import { hapticLight } from '../../lib/native'
 import type { ChromeLayout, SearchBarStyle } from '../../types/customization'
 
 function haptic() {
   const on = useQwStore.getState().settings.haptics
   if (!on) return
-  try {
-    navigator.vibrate?.(10)
-  } catch {
-    /* ignore */
-  }
+  void hapticLight()
 }
 
-function displayUrl(url: string) {
+function displayUrl(url: string, alwaysExpanded?: boolean) {
+  if (alwaysExpanded) return url === 'qw://start' ? '' : url
   if (url === 'qw://start') return ''
   if (url.startsWith('qw://')) return url
   try {
@@ -53,11 +51,13 @@ export function SearchBar({
   const settings = useQwStore((s) => s.settings)
   const catalog = useQwStore((s) => s.extensionCatalog)
   const theme = useQwStore((s) => s.resolvedTheme)
-  const [value, setValue] = useState(displayUrl(tab.url))
+  const [value, setValue] = useState(
+    displayUrl(tab.url, settings.urlAlwaysExpanded),
+  )
 
   useEffect(() => {
-    setValue(displayUrl(tab.url))
-  }, [tab.url, tab.id])
+    setValue(displayUrl(tab.url, settings.urlAlwaysExpanded))
+  }, [tab.url, tab.id, settings.urlAlwaysExpanded])
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -281,66 +281,80 @@ function QuietAccess() {
 export function BrowserChrome() {
   const layout = useQwStore((s) => s.settings.chromeLayout) as ChromeLayout
   const style = useQwStore((s) => s.settings.searchBarStyle)
+  const showHints = useQwStore((s) => s.settings.showStatusHints)
 
-  switch (layout) {
-    case 'safari':
-      return (
-        <>
-          <div className="chrome-layer chrome-top">
-            <SearchBar style={style} />
-          </div>
-          <div className="chrome-layer chrome-bottom">
-            <ControlsBar />
-          </div>
-        </>
-      )
-    case 'quiche-bottom':
-      return <UnifiedBlob position="bottom" />
-    case 'quiche-top':
-      return <UnifiedBlob position="top" />
-    case 'inverted':
-      return (
-        <>
-          <div className="chrome-layer chrome-top">
-            <ControlsBar />
-          </div>
-          <div className="chrome-layer chrome-bottom">
-            <SearchBar style={style} />
-          </div>
-        </>
-      )
-    case 'controls-top':
-      return (
-        <>
-          <div className="chrome-layer chrome-top">
-            <ControlsBar />
-          </div>
-          <div className="chrome-layer chrome-bottom">
-            <SearchBar style={style} />
-          </div>
-        </>
-      )
-    case 'search-only':
-      return (
-        <>
-          <QuietAccess />
-          <div className="chrome-layer chrome-bottom">
-            <SearchBar style={style} />
-          </div>
-        </>
-      )
-    case 'minimal':
-      return (
-        <>
-          <QuietAccess />
-          <div className="chrome-layer chrome-bottom chrome-minimal">
-            <SearchBar style={style} compact />
-          </div>
-        </>
-      )
-    default:
-      return <UnifiedBlob position="bottom" />
-  }
+  const chrome = (() => {
+    switch (layout) {
+      case 'safari':
+        return (
+          <>
+            <div className="chrome-layer chrome-top">
+              <SearchBar style={style} />
+            </div>
+            <div className="chrome-layer chrome-bottom">
+              <ControlsBar />
+            </div>
+          </>
+        )
+      case 'quiche-bottom':
+        return <UnifiedBlob position="bottom" />
+      case 'quiche-top':
+        return <UnifiedBlob position="top" />
+      case 'inverted':
+        return (
+          <>
+            <div className="chrome-layer chrome-top">
+              <ControlsBar />
+            </div>
+            <div className="chrome-layer chrome-bottom">
+              <SearchBar style={style} />
+            </div>
+          </>
+        )
+      case 'controls-top':
+        return (
+          <>
+            <div className="chrome-layer chrome-top">
+              <ControlsBar />
+            </div>
+            <div className="chrome-layer chrome-bottom">
+              <SearchBar style={style} />
+            </div>
+          </>
+        )
+      case 'search-only':
+        return (
+          <>
+            <QuietAccess />
+            <div className="chrome-layer chrome-bottom">
+              <SearchBar style={style} />
+            </div>
+          </>
+        )
+      case 'minimal':
+        return (
+          <>
+            <QuietAccess />
+            <div className="chrome-layer chrome-bottom chrome-minimal">
+              <SearchBar style={style} compact />
+            </div>
+          </>
+        )
+      default:
+        return <UnifiedBlob position="bottom" />
+    }
+  })()
+
+  return (
+    <>
+      {chrome}
+      {showHints && (
+        <div className="status-hint" aria-hidden>
+          {layout.replace(/-/g, ' ')}
+        </div>
+      )}
+    </>
+  )
 }
 
 export function useChromeInsets(layout: ChromeLayout) {

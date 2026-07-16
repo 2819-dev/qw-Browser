@@ -177,24 +177,35 @@ function MemoryGame({
   onBack: () => void
 }) {
   const unlockAchievement = useQwStore((s) => s.unlockAchievement)
-  const deck = useMemo(() => shuffle([...PAIRS, ...PAIRS]), [])
+  const [deck, setDeck] = useState(() => shuffle([...PAIRS, ...PAIRS]))
   const [flipped, setFlipped] = useState<number[]>([])
   const [matched, setMatched] = useState<number[]>([])
   const [lock, setLock] = useState(false)
   const [moves, setMoves] = useState(0)
   const [peeking, setPeeking] = useState(true)
+  const [round, setRound] = useState(0)
+  const cleared = matched.length === deck.length && deck.length > 0
 
   useEffect(() => {
     setPeeking(true)
     const t = window.setTimeout(() => setPeeking(false), power.memoryPeekMs)
     return () => window.clearTimeout(t)
-  }, [power.memoryPeekMs])
+  }, [power.memoryPeekMs, round])
 
   useEffect(() => {
-    if (matched.length === deck.length && deck.length > 0 && moves <= 40) {
+    if (cleared && moves <= 40) {
       unlockAchievement('memory-master')
     }
-  }, [matched, deck.length, moves, unlockAchievement])
+  }, [cleared, moves, unlockAchievement])
+
+  const restart = () => {
+    setDeck(shuffle([...PAIRS, ...PAIRS]))
+    setFlipped([])
+    setMatched([])
+    setLock(false)
+    setMoves(0)
+    setRound((r) => r + 1)
+  }
 
   const flip = (i: number) => {
     if (peeking || lock || flipped.includes(i) || matched.includes(i)) return
@@ -224,7 +235,15 @@ function MemoryGame({
       footer={
         <p className="games-meta">
           Moves {moves}
-          {matched.length === deck.length ? ' · Cleared' : ''}
+          {cleared ? ' · Cleared' : ''}
+          {cleared ? (
+            <>
+              {' · '}
+              <button type="button" className="ghost-link" onClick={restart}>
+                Play again
+              </button>
+            </>
+          ) : null}
         </p>
       }
     >
@@ -233,7 +252,7 @@ function MemoryGame({
           const open = peeking || flipped.includes(i) || matched.includes(i)
           return (
             <button
-              key={`${sym}-${i}`}
+              key={`${round}-${sym}-${i}`}
               type="button"
               className={clsx('memory-card glass', open && 'open', matched.includes(i) && 'matched')}
               onClick={() => flip(i)}

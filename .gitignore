@@ -25,3 +25,29 @@ dist-ssr
 
 # Local extensions API data
 server/data/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Capacitor / iOS (Xcode/CocoaPods)
+ios/App/Pods/
+ios/App/Podfile.lock
+ios/App/build/
+ios/DerivedData/
+ios/**/xcuserdata/
+ios/**/*.xcworkspace/xcuserdata/
+ios/**/*.xcodeproj/xcuserdata/
+ios/**/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/capacitor-cordova-ios-plugins/
+ios/App/public/
+
+# Capacitor / Android (Gradle)
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/**/*.iml
+android/.idea/
+android/captures/

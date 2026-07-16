@@ -156,11 +156,27 @@ export const useQwStore = create<BrowserState>()(
       patchSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
 
-      resetSettings: () =>
+      resetSettings: () => {
+        const tab = makeTab('qw://start')
         set({
-          settings: { ...DEFAULT_SETTINGS, onboardingComplete: true },
+          settings: {
+            ...DEFAULT_SETTINGS,
+            onboardingComplete: true,
+            tourComplete: true,
+            welcomeSeen: true,
+            fullGuideComplete: get().settings.fullGuideComplete,
+          },
+          tabs: [tab],
+          activeTabId: tab.id,
           showOnboarding: false,
-        }),
+          showTour: false,
+          showWelcome: false,
+          showSettings: false,
+          showTabs: false,
+          showFullGuide: false,
+          extensionCatalog: BUILTIN_EXTENSIONS,
+        })
+      },
 
       setChromeLayout: (chromeLayout) =>
         set((s) => ({ settings: { ...s.settings, chromeLayout } })),
@@ -334,7 +350,12 @@ export const useQwStore = create<BrowserState>()(
       },
 
       closeTab: (id) => {
-        const { tabs, activeTabId } = get()
+        const { tabs, activeTabId, settings } = get()
+        if (settings.confirmCloseTab && tabs.length > 1) {
+          const tab = tabs.find((t) => t.id === id)
+          const ok = window.confirm(`Close “${tab?.title || 'tab'}”?`)
+          if (!ok) return
+        }
         if (tabs.length === 1) {
           const tab = makeTab()
           set({ tabs: [tab], activeTabId: tab.id, showTabs: false })
@@ -455,9 +476,14 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v6',
+      name: 'qw-browser-v7',
       partialize: (s) => ({
         settings: s.settings,
+        tabs: s.tabs.map((t) => ({
+          ...t,
+          loading: false,
+        })),
+        activeTabId: s.activeTabId,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
@@ -480,6 +506,13 @@ export const useQwStore = create<BrowserState>()(
           state.settings.controls = {
             ...state.settings.controls,
             settings: true,
+          }
+          if (!state.tabs?.length) {
+            const tab = makeTab('qw://start')
+            state.tabs = [tab]
+            state.activeTabId = tab.id
+          } else if (!state.tabs.some((t) => t.id === state.activeTabId)) {
+            state.activeTabId = state.tabs[0].id
           }
           state.showOnboarding = !state.settings.onboardingComplete
           state.showTour =

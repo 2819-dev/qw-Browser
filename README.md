@@ -2,7 +2,9 @@
 
 **Extremely customizable. Still minimal.**
 
-qw is a mobile-first browser shell with real Apple-style **Liquid Glass** UI (plus solid Classic and optional Cyber). Chromium-class rendering on device via Capacitor. See [FEATURES.md](./FEATURES.md) for priorities.
+qw is a mobile-first browser shell with Apple-style **Liquid Glass** (plus solid Classic and optional Cyber), built with Capacitor for App Store / Play. See [FEATURES.md](./FEATURES.md) and [PUBLISHING.md](./PUBLISHING.md).
+
+No AI features — customization is all yours through Settings and the Full Customization Guide.
 
 ## First-run flow
 
@@ -15,54 +17,38 @@ qw is a mobile-first browser shell with real Apple-style **Liquid Glass** UI (pl
 
 | Style | What you should see |
 |-------|---------------------|
-| **Liquid Glass** | Frosted blur, specular rim, refracting atmosphere |
+| **Liquid Glass** | Frosted blur, specular rim, nested materials, ambient refraction |
 | **Classic** | Opaque solid bars. **No blur.** Crystal clear |
 | **Cyber** | Neon / mono gamer chrome |
 
 ## Run (web preview)
-
-You need the feature branch that includes the extensions API (`cursor/qw-browser-customization-5d3f` or a merge of it):
 
 ```bash
 git fetch origin
 git checkout cursor/qw-browser-customization-5d3f
 git pull
 npm install
-```
-
-Then either run both services with one command:
-
-```bash
 npm run dev:full
 ```
 
-Or in two terminals:
+Or two terminals: `npm run server` then `npm run dev -- --host`.
 
-```bash
-npm run server
-```
-
-```bash
-npm run dev -- --host
-```
-
-- Extensions API: http://localhost:8787  
-- App: http://localhost:5173 (Vite proxies `/api`)  
+- App: http://localhost:5173  
 - Developer portal: http://localhost:5173/developer  
-- Mobile store: open the app → `qw://extensions`
+- Extensions: `qw://extensions` (API on :8787)
 
-Admin review key defaults to `qw-dev` (`QW_ADMIN_KEY` env to override).
+Clear site data if you need to re-run onboarding (`localStorage` key `qw-browser-v7`).
 
-On desktop you’ll see an iPhone-sized frame; on a phone it’s full-bleed. Clear site data / use a private window if you need to re-run onboarding (`localStorage` key `qw-browser-v6`).
+## Native (App Store)
 
-## Native (Capacitor)
+iOS project lives in `ios/`. On a Mac with Xcode:
 
 ```bash
-npm run build
-npx cap add ios      # requires macOS + Xcode
-npx cap add android
-npx cap sync
+npm run build:ios
+npx cap open ios
 ```
+
+Follow [PUBLISHING.md](./PUBLISHING.md) for Bundle ID, privacy manifest, screenshots, and Review Notes. **Shipping builds must use WKWebView for page content** (web preview still uses an iframe).
 
 ## License
 

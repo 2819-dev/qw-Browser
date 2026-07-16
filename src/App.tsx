@@ -9,6 +9,7 @@ import { FeatureTour } from './components/onboarding/FeatureTour'
 import { WelcomeCeremony } from './components/onboarding/WelcomeCeremony'
 import { SettingsSheet, TabsSheet } from './components/settings/SettingsSheet'
 import { FullCustomizationGuide } from './components/settings/FullCustomizationGuide'
+import { setStatusBar, hideSplash } from './lib/native'
 import './styles/qw.css'
 
 function useResolvedTheme() {
@@ -27,6 +28,10 @@ function useResolvedTheme() {
       if (meta) {
         meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#f2f2f7')
       }
+      // On native (iOS/Android) mirror the resolved theme onto the status bar.
+      // status-bar's Style.Light = dark content on light background, so we
+      // pass the semantic theme name and let native.ts translate.
+      void setStatusBar(resolved === 'dark' ? 'dark' : 'light')
     }
     apply()
     mq.addEventListener('change', apply)
@@ -88,6 +93,54 @@ export default function App() {
   useResolvedTheme()
   useDynamicFavicon()
   useFullscreenShell()
+
+  useEffect(() => {
+    void hideSplash()
+  }, [])
+
+  useEffect(() => {
+    let remove: (() => void) | undefined
+    let cancelled = false
+    void (async () => {
+      try {
+        const { App } = await import('@capacitor/app')
+        const handle = await App.addListener('appStateChange', ({ isActive }) => {
+          if (isActive) return
+          const { settings } = useQwStore.getState()
+          if (!settings.clearOnExit) return
+          const id = Math.random().toString(36).slice(2, 10)
+          useQwStore.setState({
+            tabs: [
+              {
+                id,
+                title: 'Start',
+                url: 'qw://start',
+                loading: false,
+                canGoBack: false,
+                canGoForward: false,
+                history: ['qw://start'],
+                historyIndex: 0,
+              },
+            ],
+            activeTabId: id,
+          })
+        })
+        if (cancelled) {
+          void handle.remove()
+          return
+        }
+        remove = () => {
+          void handle.remove()
+        }
+      } catch {
+        /* web preview — no native lifecycle */
+      }
+    })()
+    return () => {
+      cancelled = true
+      remove?.()
+    }
+  }, [])
 
   const settings = useQwStore((s) => s.settings)
   const extensionCatalog = useQwStore((s) => s.extensionCatalog)

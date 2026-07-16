@@ -254,9 +254,9 @@ export function SettingsSheet() {
         ))}
       </div>
 
-      <div className="section-label">App icon</div>
+      <div className="section-label">In-app icon</div>
       <p className="muted-note">
-        Changes inside qw right away. Light/dark swap with theme.
+        Used inside qw (start, search, tabs). Home-screen icon is set in Xcode for the App Store build.
       </p>
       <div className="icon-family-grid">
         {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
@@ -269,10 +269,7 @@ export function SettingsSheet() {
             title={ICON_FAMILIES[v].title}
           >
             <QwAppIconPair variant={v} size={40} />
-            <strong>
-              {ICON_FAMILIES[v].title}
-              {ICON_FAMILIES[v].pro ? <span className="pro-badge">PRO</span> : null}
-            </strong>
+            <strong>{ICON_FAMILIES[v].title}</strong>
           </button>
         ))}
       </div>
@@ -369,12 +366,61 @@ export function SettingsSheet() {
         </div>
         <div className="settings-row">
           <div className="label">
+            <strong>Expanded address</strong>
+            <span>Always show the full URL</span>
+          </div>
+          <Toggle
+            on={settings.urlAlwaysExpanded}
+            onChange={(v) => setSetting('urlAlwaysExpanded', v)}
+          />
+        </div>
+        <div className="settings-row">
+          <div className="label">
+            <strong>Open links in new tab</strong>
+            <span>Start-page shortcuts open a new tab</span>
+          </div>
+          <Toggle
+            on={settings.openLinksInNewTab}
+            onChange={(v) => setSetting('openLinksInNewTab', v)}
+          />
+        </div>
+        <div className="settings-row">
+          <div className="label">
+            <strong>Confirm close tab</strong>
+          </div>
+          <Toggle
+            on={settings.confirmCloseTab}
+            onChange={(v) => setSetting('confirmCloseTab', v)}
+          />
+        </div>
+        <div className="settings-row">
+          <div className="label">
+            <strong>Clear tabs on exit</strong>
+            <span>Reset to Start when the app backgrounds</span>
+          </div>
+          <Toggle
+            on={settings.clearOnExit}
+            onChange={(v) => setSetting('clearOnExit', v)}
+          />
+        </div>
+        <div className="settings-row">
+          <div className="label">
             <strong>Show app icon</strong>
             <span>Big icon on the start page</span>
           </div>
           <Toggle
             on={settings.showQwWordmark}
             onChange={(v) => setSetting('showQwWordmark', v)}
+          />
+        </div>
+        <div className="settings-row">
+          <div className="label">
+            <strong>Status hints</strong>
+            <span>Subtle layout labels while customizing</span>
+          </div>
+          <Toggle
+            on={settings.showStatusHints}
+            onChange={(v) => setSetting('showStatusHints', v)}
           />
         </div>
         <div className="settings-row">
@@ -472,7 +518,35 @@ export function SettingsSheet() {
         <button type="button" className="settings-row" onClick={resetSettings}>
           <div className="label">
             <strong>Reset customization</strong>
-            <span>Restores defaults (keeps onboarding done)</span>
+            <span>Defaults for look &amp; layout · keeps achievements</span>
+          </div>
+          <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
+        </button>
+        <button
+          type="button"
+          className="settings-row"
+          onClick={() => {
+            if (
+              !window.confirm(
+                'Erase all qw data on this device? Tabs, settings, achievements, and extensions will reset.',
+              )
+            ) {
+              return
+            }
+            try {
+              localStorage.removeItem('qw-browser-v7')
+              localStorage.removeItem('qw-browser-v6')
+              localStorage.removeItem('qw-browser-v5')
+              localStorage.removeItem('qw-browser-v4')
+            } catch {
+              /* ignore */
+            }
+            window.location.reload()
+          }}
+        >
+          <div className="label">
+            <strong>Clear all data</strong>
+            <span>Factory reset · restarts onboarding</span>
           </div>
           <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
         </button>

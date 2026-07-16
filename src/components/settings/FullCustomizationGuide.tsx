@@ -22,18 +22,20 @@ import {
 } from '../../types/customization'
 
 const GUIDE_STEPS = [
-  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass & Classic stay quiet. Cyber is neon color.' },
+  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass is Apple materials. Classic is solid. Cyber is neon.' },
   { id: 'font', title: 'Default font', blurb: 'Pick the typeface for the whole chrome.' },
-  { id: 'icon', title: 'App icon', blurb: 'Pick a style — light and dark versions swap with your theme.' },
-  { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and blur intensity.' },
-  { id: 'accent', title: 'Accent', blurb: 'Mono keeps black & white. Color accents are optional — Cyber loves them.' },
+  { id: 'icon', title: 'In-app icon', blurb: 'Every family is available — light and dark swap with your theme.' },
+  { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and Liquid Glass blur intensity.' },
+  { id: 'accent', title: 'Accent', blurb: 'Mono keeps quiet black & white. Color accents are optional.' },
   { id: 'layout', title: 'Where things go', blurb: 'Scroll options and preview the real layout.' },
   { id: 'searchbar', title: 'Search bar shape', blurb: 'Capsule, pill, rounded, or square.' },
-  { id: 'controls', title: 'Visible buttons', blurb: 'Show only the buttons you use.' },
-  { id: 'wallpaper', title: 'Start wallpaper', blurb: 'Backdrop for your start page.' },
-  { id: 'start', title: 'Start page', blurb: 'Favorites, suggestions, blank, or art.' },
+  { id: 'controls', title: 'Visible buttons', blurb: 'Show only the buttons you use. Settings always stays.' },
+  { id: 'wallpaper', title: 'Start wallpaper', blurb: 'Backdrop for your start page — glass refracts it.' },
+  { id: 'start', title: 'Start page', blurb: 'Favorites, suggestions, blank, or art only.' },
   { id: 'loader', title: 'Loading icon', blurb: 'How qw feels while pages load.' },
   { id: 'engine', title: 'Search engine', blurb: 'Default engine for queries.' },
+  { id: 'behavior', title: 'Browsing behavior', blurb: 'Address bar, tabs, and exit preferences.' },
+  { id: 'access', title: 'Comfort', blurb: 'Haptics and motion — keep qw calm if you prefer.' },
 ] as const
 
 export function FullCustomizationGuide() {
@@ -140,10 +142,7 @@ export function FullCustomizationGuide() {
               onClick={() => setAppIcon(v)}
             >
               <QwAppIconPair variant={v} size={48} />
-              <strong>
-                {ICON_FAMILIES[v].title}
-                {ICON_FAMILIES[v].pro ? <span className="pro-badge">PRO</span> : null}
-              </strong>
+              <strong>{ICON_FAMILIES[v].title}</strong>
               <span>{ICON_FAMILIES[v].subtitle}</span>
             </button>
           ))}
@@ -311,6 +310,64 @@ export function FullCustomizationGuide() {
               <strong style={{ textTransform: 'capitalize' }}>{engine}</strong>
             </button>
           ))}
+        </div>
+      )}
+
+      {current.id === 'behavior' && (
+        <div className="settings-group" style={{ marginTop: 4 }}>
+          {(
+            [
+              ['urlAlwaysExpanded', 'Expanded address', 'Always show the full URL'] as const,
+              ['openLinksInNewTab', 'Open links in new tab', 'Start shortcuts open a new tab'] as const,
+              ['confirmCloseTab', 'Confirm close tab', 'Ask before closing a tab'] as const,
+              ['clearOnExit', 'Clear tabs on exit', 'Reset to Start when backgrounded'] as const,
+              ['showHttpsBadge', 'HTTPS badge', 'Show the lock on secure pages'] as const,
+              ['showQwWordmark', 'Show app icon', 'Big icon on the start page'] as const,
+              ['showStatusHints', 'Status hints', 'Subtle layout labels while browsing'] as const,
+            ] as const
+          ).map(([key, title, span]) => (
+            <div key={key} className="settings-row">
+              <div className="label">
+                <strong>{title}</strong>
+                <span>{span}</span>
+              </div>
+              <button
+                type="button"
+                className={clsx('toggle', settings[key] && 'on')}
+                aria-pressed={settings[key]}
+                onClick={() => setSetting(key, !settings[key])}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'access' && (
+        <div className="settings-group" style={{ marginTop: 4 }}>
+          <div className="settings-row">
+            <div className="label">
+              <strong>Haptics</strong>
+              <span>Light taps on controls</span>
+            </div>
+            <button
+              type="button"
+              className={clsx('toggle', settings.haptics && 'on')}
+              aria-pressed={settings.haptics}
+              onClick={() => setSetting('haptics', !settings.haptics)}
+            />
+          </div>
+          <div className="settings-row">
+            <div className="label">
+              <strong>Reduce motion</strong>
+              <span>Calm animations</span>
+            </div>
+            <button
+              type="button"
+              className={clsx('toggle', settings.reduceMotion && 'on')}
+              aria-pressed={settings.reduceMotion}
+              onClick={() => setSetting('reduceMotion', !settings.reduceMotion)}
+            />
+          </div>
         </div>
       )}
 

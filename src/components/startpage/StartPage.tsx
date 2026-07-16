@@ -63,7 +63,18 @@ export function StartPage() {
             <p className="empty-hint quiet">Bookmarks appear here</p>
           ) : (
             favorites.map((url) => (
-              <button key={url} className="favorite" type="button" onClick={() => navigate(url)}>
+              <button
+                key={url}
+                className="favorite"
+                type="button"
+                onClick={() => {
+                  if (settings.openLinksInNewTab) {
+                    useQwStore.getState().createTab(url)
+                  } else {
+                    navigate(url)
+                  }
+                }}
+              >
                 <div className="tile clean-tile">{letter(url)}</div>
                 <span className="name">{hostLabel(url)}</span>
               </button>

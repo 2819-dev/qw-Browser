@@ -219,6 +219,19 @@ button {
   background: var(--qw-bg-elevated-strong);
 }
 
+/* Solid fallback when the browser can't render backdrop-filter (older Firefox, etc.) */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--qw-bg-elevated-strong);
+  }
+  .glass::before {
+    display: none;
+  }
+  .sheet-backdrop {
+    background: rgba(0, 0, 0, 0.55);
+  }
+}
+
 .glass-blob {
   border-radius: var(--qw-radius-blob);
 }
@@ -232,6 +245,7 @@ button {
 }
 
 .glass-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -241,7 +255,7 @@ button {
   border-radius: 12px;
   color: var(--qw-fg);
   transition: transform 0.18s var(--qw-ease), background 0.18s var(--qw-ease),
-    opacity 0.18s var(--qw-ease);
+    opacity 0.18s var(--qw-ease), box-shadow 0.18s var(--qw-ease);
 }
 
 .glass-btn:active {
@@ -396,6 +410,26 @@ button {
   pointer-events: auto;
 }
 
+.status-hint {
+  position: absolute;
+  top: calc(6px + var(--qw-safe-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  pointer-events: none;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qw-fg-tertiary);
+  opacity: 0.72;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--qw-bg-elevated) 72%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
 .chrome-top {
   top: 0;
   padding-top: calc(var(--qw-safe-top) + 6px);
@@ -539,11 +573,20 @@ button {
   position: absolute;
   inset: 0;
   z-index: 40;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(8px);
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255, 244, 232, 0.14), transparent 68%),
+    rgba(28, 28, 30, 0.28);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
+}
+
+[data-theme='dark'] .sheet-backdrop {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(150, 190, 220, 0.10), transparent 68%),
+    rgba(0, 0, 0, 0.46);
 }
 
 .sheet {
@@ -1857,14 +1900,21 @@ button {
   --qw-glass-bright: 1.08;
 }
 
+/* Base lens: keep the elevated tint (from .glass / .glass-strong) as the
+   background-color, and layer a very subtle fractal-noise grain on top so the
+   material has micro-texture like frosted glass. Encoded SVG (%23 = #). */
 [data-style='liquid-glass'] .glass {
-  /* Continuous curvature + clear lens — no noise grit */
-  background-color: var(--qw-bg-elevated);
-  background-image: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+  background-repeat: repeat;
+  background-size: 140px 140px;
+  background-blend-mode: overlay;
+}
+
+[data-theme='dark'][data-style='liquid-glass'] .glass {
+  background-blend-mode: soft-light;
 }
 
 [data-style='liquid-glass'] .glass.glass-strong {
-  background-color: var(--qw-bg-elevated-strong);
   /* thicker material when elevated */
   box-shadow:
     0 0.5px 0 rgba(255, 255, 255, 0.9) inset,
@@ -1884,9 +1934,25 @@ button {
   padding: 6px;
 }
 
+/* Nested glass: the input sits inside the outer blob and should read as a
+   thinner pane of the same material — its own blur + subtle fill, not a flat
+   tint. Own backdrop-filter creates the layered "glass on glass" effect. */
 [data-style='liquid-glass'] .unified-blob .search-bar {
-  background: color-mix(in srgb, var(--qw-fg) 4%, transparent);
+  background: color-mix(in srgb, #ffffff 32%, transparent);
   border-radius: 999px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 0.5px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -0.5px 0 rgba(0, 0, 0, 0.05) inset,
+    0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'][data-style='liquid-glass'] .unified-blob .search-bar {
+  background: color-mix(in srgb, #ffffff 10%, transparent);
+  box-shadow:
+    0 0.5px 0 rgba(255, 255, 255, 0.16) inset,
+    0 -0.5px 0 rgba(0, 0, 0, 0.4) inset;
 }
 
 [data-style='liquid-glass'] .search-bar.style-capsule,
@@ -1898,12 +1964,23 @@ button {
   border-radius: 999px;
 }
 
+/* Press: quiet compress + a real thin inner highlight (replaces the previous
+   empty ::after content:'' hack which drew nothing and risked stomping the
+   glass rim when a button was also .glass). */
 [data-style='liquid-glass'] .glass-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.92);
+  opacity: 1;
+  box-shadow:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.08),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.35);
 }
 
-[data-style='liquid-glass'] .glass-btn:active::after {
-  content: '';
+[data-theme='dark'][data-style='liquid-glass'] .glass-btn:active {
+  box-shadow:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.4),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
 }
 
 [data-style='liquid-glass'] .live-blob {
@@ -1924,6 +2001,26 @@ button {
   background:
     radial-gradient(90% 70% at 50% 0%, rgba(255, 255, 255, 0.85), transparent 55%),
     var(--qw-glass-highlight);
+}
+
+/* Ambient light for the lens to refract when the user has no wallpaper set.
+   Without this, liquid-glass over a flat --qw-bg looks dead. Warm in light
+   mode, cool in dark mode — Apple-quiet, not decorative. */
+[data-style='liquid-glass'] .glass-atmosphere {
+  background:
+    radial-gradient(ellipse at 18% 8%, rgba(255, 214, 178, 0.14), transparent 46%),
+    radial-gradient(ellipse at 82% 20%, rgba(184, 214, 255, 0.12), transparent 44%),
+    radial-gradient(ellipse at 55% 92%, rgba(255, 200, 214, 0.10), transparent 46%),
+    radial-gradient(ellipse at 40% 45%, rgba(255, 255, 255, 0.32), transparent 38%);
+  opacity: 1;
+}
+
+[data-theme='dark'][data-style='liquid-glass'] .glass-atmosphere {
+  background:
+    radial-gradient(ellipse at 18% 8%, rgba(120, 150, 200, 0.14), transparent 46%),
+    radial-gradient(ellipse at 86% 22%, rgba(180, 130, 180, 0.10), transparent 44%),
+    radial-gradient(ellipse at 40% 88%, rgba(80, 140, 200, 0.10), transparent 48%),
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.05), transparent 34%);
 }
 
 [data-style='classic'] .live-blob {
