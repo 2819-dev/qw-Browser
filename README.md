@@ -21,16 +21,35 @@ qw is a mobile-first browser shell with real Apple-style **Liquid Glass** UI (pl
 
 ## Run (web preview)
 
+You need the feature branch that includes the extensions API (`cursor/qw-browser-customization-5d3f` or a merge of it):
+
 ```bash
+git fetch origin
+git checkout cursor/qw-browser-customization-5d3f
+git pull
 npm install
-npm run server          # extensions API on :8787 (keep running)
-npm run dev -- --host   # app on :5173 — proxies /api
 ```
 
-Or both together: `npm run dev:full`.
+Then either run both services with one command:
 
-- **Mobile store:** open the app → `qw://extensions` (approved listings only)
-- **Developer portal (computer):** http://localhost:5173/developer — submit, check status, review/approve
+```bash
+npm run dev:full
+```
+
+Or in two terminals:
+
+```bash
+npm run server
+```
+
+```bash
+npm run dev -- --host
+```
+
+- Extensions API: http://localhost:8787  
+- App: http://localhost:5173 (Vite proxies `/api`)  
+- Developer portal: http://localhost:5173/developer  
+- Mobile store: open the app → `qw://extensions`
 
 Admin review key defaults to `qw-dev` (`QW_ADMIN_KEY` env to override).
 
