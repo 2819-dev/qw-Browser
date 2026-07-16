@@ -1,0 +1,27 @@
+{
+  "appId": "dev.qw.browser",
+  "appName": "qw",
+  "webDir": "dist",
+  "ios": {
+    "scheme": "qw",
+    "contentInset": "always"
+  },
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "backgroundColor": "#F2F2F7",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "style": "DEFAULT"
+    },
+    "Keyboard": {
+      "resize": "native"
+    }
+  }
+}

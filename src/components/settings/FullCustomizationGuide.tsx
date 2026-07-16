@@ -1,0 +1,394 @@
+import { useState } from 'react'
+import clsx from 'clsx'
+import { QwAppIconPair } from '../glass/QwAppIcon'
+import { LayoutPicker } from '../chrome/LayoutPicker'
+import { useQwStore } from '../../store/qwStore'
+import {
+  ACCENT_COLORS,
+  WALLPAPER_META,
+  ICON_FAMILIES,
+  VISUAL_STYLES,
+  UI_FONTS,
+  type AccentName,
+  type WallpaperId,
+  type LoadingIcon,
+  type SearchBarStyle,
+  type GlassIntensity,
+  type StartPageContent,
+  type ThemeMode,
+  type IconVariant,
+  type VisualStyle,
+  type UiFont,
+} from '../../types/customization'
+
+const GUIDE_STEPS = [
+  { id: 'style', title: 'Visual style', blurb: 'Liquid Glass is Apple materials. Classic is solid. Cyber is neon.' },
+  { id: 'font', title: 'Default font', blurb: 'Pick the typeface for the whole chrome.' },
+  { id: 'icon', title: 'In-app icon', blurb: 'Every family is available — light and dark swap with your theme.' },
+  { id: 'theme', title: 'Theme & glass', blurb: 'Appearance mode and Liquid Glass blur intensity.' },
+  { id: 'accent', title: 'Accent', blurb: 'Mono keeps quiet black & white. Color accents are optional.' },
+  { id: 'layout', title: 'Where things go', blurb: 'Scroll options and preview the real layout.' },
+  { id: 'searchbar', title: 'Search bar shape', blurb: 'Capsule, pill, rounded, or square.' },
+  { id: 'controls', title: 'Visible buttons', blurb: 'Show only the buttons you use. Settings always stays.' },
+  { id: 'wallpaper', title: 'Start wallpaper', blurb: 'Backdrop for your start page — glass refracts it.' },
+  { id: 'start', title: 'Start page', blurb: 'Favorites, suggestions, blank, or art only.' },
+  { id: 'loader', title: 'Loading icon', blurb: 'How qw feels while pages load.' },
+  { id: 'engine', title: 'Search engine', blurb: 'Default engine for queries.' },
+  { id: 'behavior', title: 'Browsing behavior', blurb: 'Address bar, tabs, and exit preferences.' },
+  { id: 'access', title: 'Comfort', blurb: 'Haptics and motion — keep qw calm if you prefer.' },
+] as const
+
+export function FullCustomizationGuide() {
+  const [step, setStep] = useState(0)
+  const settings = useQwStore((s) => s.settings)
+  const setShowFullGuide = useQwStore((s) => s.setShowFullGuide)
+  const patchSettings = useQwStore((s) => s.patchSettings)
+  const setChromeLayout = useQwStore((s) => s.setChromeLayout)
+  const setAccent = useQwStore((s) => s.setAccent)
+  const setWallpaper = useQwStore((s) => s.setWallpaper)
+  const setThemeMode = useQwStore((s) => s.setThemeMode)
+  const setSearchBarStyle = useQwStore((s) => s.setSearchBarStyle)
+  const setGlassIntensity = useQwStore((s) => s.setGlassIntensity)
+  const setLoadingIcon = useQwStore((s) => s.setLoadingIcon)
+  const setAppIcon = useQwStore((s) => s.setAppIcon)
+  const setVisualStyle = useQwStore((s) => s.setVisualStyle)
+  const setUiFont = useQwStore((s) => s.setUiFont)
+  const setStartPageContent = useQwStore((s) => s.setStartPageContent)
+  const setControl = useQwStore((s) => s.setControl)
+  const setSetting = useQwStore((s) => s.setSetting)
+
+  const current = GUIDE_STEPS[step]
+  const progress = ((step + 1) / GUIDE_STEPS.length) * 100
+
+  const finish = () => {
+    patchSettings({ fullGuideComplete: true })
+    setShowFullGuide(false)
+  }
+
+  return (
+    <div className="onboarding" style={{ zIndex: 60 }}>
+      <div className="guide-progress">
+        <i style={{ width: `${progress}%` }} />
+      </div>
+
+      <div className="onboarding-hero tight">
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 650,
+            color: 'var(--qw-accent)',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            marginBottom: 8,
+          }}
+        >
+          Full Customization Guide · {step + 1}/{GUIDE_STEPS.length}
+        </div>
+        <h1>{current.title}</h1>
+        <p>{current.blurb}</p>
+      </div>
+
+      {current.id === 'style' && (
+        <div className="style-pick-list">
+          {(Object.keys(VISUAL_STYLES) as VisualStyle[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={clsx(
+                'style-pick-card',
+                `preview-${key}`,
+                settings.visualStyle === key && 'selected',
+              )}
+              onClick={() => setVisualStyle(key)}
+            >
+              <div className="style-pick-swatch" aria-hidden>
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="style-pick-copy">
+                <strong>{VISUAL_STYLES[key].title}</strong>
+                <span>{VISUAL_STYLES[key].subtitle}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'font' && (
+        <div className="font-pick-list">
+          {(Object.keys(UI_FONTS) as UiFont[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={clsx('font-pick-card', settings.uiFont === key && 'selected')}
+              onClick={() => setUiFont(key)}
+              style={{ fontFamily: UI_FONTS[key].stack }}
+            >
+              <strong>Aa — {UI_FONTS[key].title}</strong>
+              <span>{UI_FONTS[key].subtitle}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'icon' && (
+        <div className="icon-family-grid">
+          {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
+            <button
+              key={v}
+              type="button"
+              className={clsx('icon-family-card', settings.appIcon === v && 'selected')}
+              onClick={() => setAppIcon(v)}
+            >
+              <QwAppIconPair variant={v} size={48} />
+              <strong>{ICON_FAMILIES[v].title}</strong>
+              <span>{ICON_FAMILIES[v].subtitle}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'theme' && (
+        <>
+          <div className="chip-grid three" style={{ marginBottom: 16 }}>
+            {(['system', 'light', 'dark'] as ThemeMode[]).map((m) => (
+              <button
+                key={m}
+                type="button"
+                className={clsx('choice-card', settings.themeMode === m && 'selected')}
+                style={{ minHeight: 64 }}
+                onClick={() => setThemeMode(m)}
+              >
+                <strong style={{ textTransform: 'capitalize' }}>{m}</strong>
+              </button>
+            ))}
+          </div>
+          <div className="onboarding-step-title">Glass intensity</div>
+          <div className="chip-grid three">
+            {(['subtle', 'medium', 'strong'] as GlassIntensity[]).map((g) => (
+              <button
+                key={g}
+                type="button"
+                className={clsx('choice-card', settings.glassIntensity === g && 'selected')}
+                style={{ minHeight: 64 }}
+                onClick={() => setGlassIntensity(g)}
+              >
+                <strong style={{ textTransform: 'capitalize' }}>{g}</strong>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {current.id === 'accent' && (
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {(Object.keys(ACCENT_COLORS) as AccentName[]).map((a) => (
+            <button
+              key={a}
+              type="button"
+              className={clsx('accent-swatch', settings.accent === a && 'selected')}
+              style={{ background: ACCENT_COLORS[a], width: 44, height: 44 }}
+              onClick={() => setAccent(a)}
+              aria-label={a}
+            />
+          ))}
+        </div>
+      )}
+
+      {current.id === 'layout' && (
+        <LayoutPicker value={settings.chromeLayout} onChange={setChromeLayout} />
+      )}
+
+      {current.id === 'searchbar' && (
+        <div className="chip-grid">
+          {(['capsule', 'pill', 'rounded', 'square'] as SearchBarStyle[]).map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={clsx('choice-card', settings.searchBarStyle === s && 'selected')}
+              onClick={() => setSearchBarStyle(s)}
+            >
+              <div
+                className="glass"
+                style={{
+                  height: 28,
+                  marginBottom: 10,
+                  borderRadius:
+                    s === 'capsule' ? 999 : s === 'pill' ? 18 : s === 'rounded' ? 12 : 6,
+                }}
+              />
+              <strong style={{ textTransform: 'capitalize' }}>{s}</strong>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'controls' && (
+        <div className="settings-group">
+          {(Object.keys(settings.controls) as (keyof typeof settings.controls)[])
+            .filter((key) => key !== 'settings')
+            .map((key) => (
+              <button
+                key={key}
+                type="button"
+                className="settings-row"
+                onClick={() => setControl(key, !settings.controls[key])}
+              >
+                <div className="label">
+                  <strong style={{ textTransform: 'capitalize' }}>{key}</strong>
+                </div>
+                <span style={{ color: 'var(--qw-accent)', fontWeight: 600, fontSize: 13 }}>
+                  {settings.controls[key] ? 'On' : 'Off'}
+                </span>
+              </button>
+            ))}
+        </div>
+      )}
+
+      {current.id === 'wallpaper' && (
+        <div className="chip-grid three">
+          {(Object.keys(WALLPAPER_META) as WallpaperId[]).map((w) => (
+            <button
+              key={w}
+              type="button"
+              className={clsx('wallpaper-swatch', settings.wallpaper === w && 'selected')}
+              style={{
+                background:
+                  WALLPAPER_META[w].css === 'transparent' ? 'var(--qw-bg)' : WALLPAPER_META[w].css,
+              }}
+              onClick={() => setWallpaper(w)}
+              aria-label={WALLPAPER_META[w].title}
+            />
+          ))}
+        </div>
+      )}
+
+      {current.id === 'start' && (
+        <div className="chip-grid">
+          {(['blank', 'favorites', 'suggestions', 'wallpaper-only'] as StartPageContent[]).map(
+            (c) => (
+              <button
+                key={c}
+                type="button"
+                className={clsx('choice-card', settings.startPageContent === c && 'selected')}
+                onClick={() => setStartPageContent(c)}
+              >
+                <strong style={{ textTransform: 'capitalize' }}>{c.replace('-', ' ')}</strong>
+              </button>
+            ),
+          )}
+        </div>
+      )}
+
+      {current.id === 'loader' && (
+        <div className="chip-grid three">
+          {(['qw', 'spinner', 'dots', 'pulse', 'ring', 'bars'] as LoadingIcon[]).map((icon) => (
+            <button
+              key={icon}
+              type="button"
+              className={clsx('choice-card', settings.loadingIcon === icon && 'selected')}
+              style={{ minHeight: 72 }}
+              onClick={() => setLoadingIcon(icon)}
+            >
+              <strong style={{ textTransform: 'capitalize' }}>{icon}</strong>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'engine' && (
+        <div className="chip-grid">
+          {(['duckduckgo', 'google', 'bing', 'ecosia', 'brave'] as const).map((engine) => (
+            <button
+              key={engine}
+              type="button"
+              className={clsx('choice-card', settings.searchEngine === engine && 'selected')}
+              style={{ minHeight: 64 }}
+              onClick={() => setSetting('searchEngine', engine)}
+            >
+              <strong style={{ textTransform: 'capitalize' }}>{engine}</strong>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'behavior' && (
+        <div className="settings-group" style={{ marginTop: 4 }}>
+          {(
+            [
+              ['urlAlwaysExpanded', 'Expanded address', 'Always show the full URL'] as const,
+              ['openLinksInNewTab', 'Open links in new tab', 'Start shortcuts open a new tab'] as const,
+              ['confirmCloseTab', 'Confirm close tab', 'Ask before closing a tab'] as const,
+              ['clearOnExit', 'Clear tabs on exit', 'Reset to Start when backgrounded'] as const,
+              ['showHttpsBadge', 'HTTPS badge', 'Show the lock on secure pages'] as const,
+              ['showQwWordmark', 'Show app icon', 'Big icon on the start page'] as const,
+              ['showStatusHints', 'Status hints', 'Subtle layout labels while browsing'] as const,
+            ] as const
+          ).map(([key, title, span]) => (
+            <div key={key} className="settings-row">
+              <div className="label">
+                <strong>{title}</strong>
+                <span>{span}</span>
+              </div>
+              <button
+                type="button"
+                className={clsx('toggle', settings[key] && 'on')}
+                aria-pressed={settings[key]}
+                onClick={() => setSetting(key, !settings[key])}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {current.id === 'access' && (
+        <div className="settings-group" style={{ marginTop: 4 }}>
+          <div className="settings-row">
+            <div className="label">
+              <strong>Haptics</strong>
+              <span>Light taps on controls</span>
+            </div>
+            <button
+              type="button"
+              className={clsx('toggle', settings.haptics && 'on')}
+              aria-pressed={settings.haptics}
+              onClick={() => setSetting('haptics', !settings.haptics)}
+            />
+          </div>
+          <div className="settings-row">
+            <div className="label">
+              <strong>Reduce motion</strong>
+              <span>Calm animations</span>
+            </div>
+            <button
+              type="button"
+              className={clsx('toggle', settings.reduceMotion && 'on')}
+              aria-pressed={settings.reduceMotion}
+              onClick={() => setSetting('reduceMotion', !settings.reduceMotion)}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="onboarding-actions">
+        <button
+          type="button"
+          className="ghost"
+          onClick={() => (step === 0 ? setShowFullGuide(false) : setStep((s) => s - 1))}
+        >
+          {step === 0 ? 'Close' : 'Back'}
+        </button>
+        {step < GUIDE_STEPS.length - 1 ? (
+          <button type="button" className="primary" onClick={() => setStep((s) => s + 1)}>
+            Next
+          </button>
+        ) : (
+          <button type="button" className="primary" onClick={finish}>
+            Done
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
