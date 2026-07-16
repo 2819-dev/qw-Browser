@@ -40,7 +40,7 @@ export function StartPage() {
           <QwAppIcon
             variant={settings.appIcon}
             theme={theme}
-            size={88}
+            size={72}
             className="brand-app-icon"
             alt="qw"
           />

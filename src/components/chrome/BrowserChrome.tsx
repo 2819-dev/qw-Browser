@@ -344,21 +344,44 @@ export function BrowserChrome() {
 }
 
 export function useChromeInsets(layout: ChromeLayout) {
+  const c = chromeClearance(layout)
+  // Legacy px helpers — prefer chromeClearance CSS lengths
+  return {
+    top: layout === 'quiche-bottom' || layout === 'minimal' || layout === 'search-only' ? 12 : 56,
+    bottom: layout === 'quiche-top' ? 12 : 110,
+    css: c,
+  }
+}
+
+/**
+ * Clearance for page content so it sits between chrome bars.
+ * Safe-area is included once here (chrome layers also use safe-area for their own padding).
+ * Values match actual chrome footprint — not double-counted.
+ */
+export function chromeClearance(layout: ChromeLayout): { top: string; bottom: string } {
+  // Chrome body heights (edge + control surface), safe-area added once
+  const bottomBlob = 'calc(102px + var(--qw-safe-bottom))'
+  const topBlob = 'calc(102px + var(--qw-safe-top))'
+  const singleBar = 'calc(54px + var(--qw-safe-bottom))'
+  const singleBarTop = 'calc(54px + var(--qw-safe-top))'
+  const statusOnly = 'calc(6px + var(--qw-safe-top))'
+  const homeOnly = 'calc(6px + var(--qw-safe-bottom))'
+
   switch (layout) {
     case 'safari':
-      return { top: 64, bottom: 64 }
+      return { top: singleBarTop, bottom: singleBar }
     case 'quiche-bottom':
-      return { top: 10, bottom: 118 }
+      return { top: statusOnly, bottom: bottomBlob }
     case 'quiche-top':
-      return { top: 118, bottom: 10 }
+      return { top: topBlob, bottom: homeOnly }
     case 'inverted':
     case 'controls-top':
-      return { top: 64, bottom: 64 }
+      return { top: singleBarTop, bottom: singleBar }
     case 'search-only':
-      return { top: 56, bottom: 64 }
+      return { top: 'calc(52px + var(--qw-safe-top))', bottom: singleBar }
     case 'minimal':
-      return { top: 56, bottom: 64 }
+      return { top: 'calc(52px + var(--qw-safe-top))', bottom: 'calc(52px + var(--qw-safe-bottom))' }
     default:
-      return { top: 10, bottom: 118 }
+      return { top: statusOnly, bottom: bottomBlob }
   }
 }

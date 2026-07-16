@@ -359,6 +359,17 @@ button {
   z-index: 1;
   overflow: hidden;
   background: transparent;
+  --qw-clear-top: calc(6px + var(--qw-safe-top));
+  --qw-clear-bottom: calc(102px + var(--qw-safe-bottom));
+}
+
+.browser-page {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--qw-clear-top);
+  bottom: var(--qw-clear-bottom);
+  overflow: hidden;
 }
 
 .browser-content iframe,
@@ -368,6 +379,7 @@ button {
   border: 0;
   background: #fff;
   border-radius: 0;
+  display: block;
 }
 
 .chrome-layer {
@@ -386,12 +398,12 @@ button {
 
 .chrome-top {
   top: 0;
-  padding-top: calc(var(--qw-safe-top) + var(--qw-chrome-edge));
+  padding-top: calc(var(--qw-safe-top) + 6px);
 }
 
 .chrome-bottom {
   bottom: 0;
-  padding-bottom: calc(var(--qw-safe-bottom) + var(--qw-chrome-edge));
+  padding-bottom: calc(var(--qw-safe-bottom) + 6px);
 }
 
 .chrome-minimal {
@@ -496,17 +508,24 @@ button {
 .unified-blob {
   display: flex;
   flex-direction: column;
-  gap: var(--qw-s1);
-  padding: var(--qw-s2);
+  gap: 2px;
+  padding: 6px;
 }
 
 .unified-blob .search-bar {
   background: color-mix(in srgb, var(--qw-fg) 5%, transparent);
+  min-height: 40px;
+  padding: 6px 12px;
 }
 
 .unified-blob .controls-row {
-  padding: 0 2px;
-  gap: 2px;
+  padding: 0;
+  gap: 0;
+}
+
+.unified-blob .glass-btn {
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .https-badge {
@@ -1247,7 +1266,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--qw-s4) var(--qw-page-x);
+  padding: 12px 14px;
   overflow: auto;
   background: transparent;
 }
@@ -1861,8 +1880,8 @@ button {
 }
 
 [data-style='liquid-glass'] .unified-blob {
-  border-radius: 32px;
-  padding: var(--qw-s2);
+  border-radius: 28px;
+  padding: 6px;
 }
 
 [data-style='liquid-glass'] .unified-blob .search-bar {
@@ -2302,7 +2321,7 @@ button {
   position: absolute;
   inset: 0;
   overflow: auto;
-  padding: var(--qw-page-y) var(--qw-page-x) calc(var(--qw-s4) + var(--qw-safe-bottom));
+  padding: 10px 14px 12px;
   display: flex;
   flex-direction: column;
   gap: var(--qw-stack-gap);
