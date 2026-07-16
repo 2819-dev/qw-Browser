@@ -44,7 +44,7 @@ function SheetShell({
         aria-label={title}
       >
         <div className="sheet-handle" />
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="sheet-header">
           <h2>{title}</h2>
           <button type="button" className="glass-btn" aria-label="Close" onClick={onClose}>
             <X size={20} />
@@ -90,31 +90,17 @@ export function SettingsSheet() {
 
       <button
         type="button"
-        className="glass glass-card"
+        className="guide-cta glass glass-card"
         data-tour="tour-full-guide"
-        style={{
-          width: '100%',
-          marginTop: 12,
-          padding: 16,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          textAlign: 'left',
-          border: '1px solid var(--qw-hairline)',
-        }}
         onClick={() => {
           setShowSettings(false)
           setShowFullGuide(true)
         }}
       >
-        <Sparkles size={22} color="var(--qw-accent)" />
-        <div style={{ flex: 1 }}>
-          <strong style={{ display: 'block', fontSize: 16, letterSpacing: '-0.02em' }}>
-            Full Customization Guide
-          </strong>
-          <span style={{ fontSize: 13, color: 'var(--qw-fg-secondary)' }}>
-            Walk through every option — icons to loaders
-          </span>
+        <Sparkles size={20} color="var(--qw-accent)" />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <strong>Full Customization Guide</strong>
+          <span>Fonts, loaders, engines — every option</span>
         </div>
         <ChevronRight size={18} color="var(--qw-fg-tertiary)" />
       </button>
@@ -171,13 +157,12 @@ export function SettingsSheet() {
       </div>
 
       <div className="section-label">Search bar</div>
-      <div className="chip-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="chip-grid four">
         {(['capsule', 'pill', 'rounded', 'square'] as SearchBarStyle[]).map((s) => (
           <button
             key={s}
             type="button"
-            className={clsx('choice-card', settings.searchBarStyle === s && 'selected')}
-            style={{ minHeight: 56 }}
+            className={clsx('choice-card compact', settings.searchBarStyle === s && 'selected')}
             onClick={() => setSearchBarStyle(s)}
           >
             <strong style={{ textTransform: 'capitalize', fontSize: 13 }}>{s}</strong>
@@ -249,7 +234,7 @@ export function SettingsSheet() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
+      <div className="accent-row">
         {(Object.keys(ACCENT_COLORS) as AccentName[]).map((a) => (
           <button
             key={a}
@@ -263,8 +248,8 @@ export function SettingsSheet() {
       </div>
 
       <div className="section-label">App icon</div>
-      <p style={{ fontSize: 12, color: 'var(--qw-fg-secondary)', margin: '0 0 10px' }}>
-        Changes the icon inside qw right away. Light/dark swap with theme.
+      <p className="muted-note">
+        Changes inside qw right away. Light/dark swap with theme.
       </p>
       <div className="icon-family-grid">
         {(Object.keys(ICON_FAMILIES) as IconVariant[]).map((v) => (
@@ -284,15 +269,14 @@ export function SettingsSheet() {
           </button>
         ))}
       </div>
-      <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <QwAppIcon variant={settings.appIcon} theme={theme} size={64} />
+      <div className="icon-now-row">
+        <QwAppIcon variant={settings.appIcon} theme={theme} size={56} />
         <div>
           <strong style={{ display: 'block', fontSize: 14 }}>
             {ICON_FAMILIES[settings.appIcon].title}
           </strong>
           <p className="icon-apply-note">
-            Used on the start page, search bar, and tab icon. Home Screen icons update after you
-            remove & Add to Home Screen again.
+            Used on start page, search bar, and tab icon.
           </p>
         </div>
       </div>
@@ -304,8 +288,7 @@ export function SettingsSheet() {
             <button
               key={c}
               type="button"
-              className={clsx('choice-card', settings.startPageContent === c && 'selected')}
-              style={{ minHeight: 64 }}
+              className={clsx('choice-card compact', settings.startPageContent === c && 'selected')}
               onClick={() => setStartPageContent(c)}
             >
               <strong style={{ textTransform: 'capitalize' }}>{c.replace('-', ' ')}</strong>
@@ -334,8 +317,7 @@ export function SettingsSheet() {
           <button
             key={icon}
             type="button"
-            className={clsx('choice-card', settings.loadingIcon === icon && 'selected')}
-            style={{ minHeight: 64 }}
+            className={clsx('choice-card compact', settings.loadingIcon === icon && 'selected')}
             onClick={() => setLoadingIcon(icon)}
           >
             <strong style={{ textTransform: 'capitalize' }}>{icon}</strong>
@@ -470,7 +452,7 @@ export function TabsSheet() {
 
   return (
     <SheetShell title="Tabs" onClose={() => setShowTabs(false)}>
-      <div className="tabs-grid" style={{ marginTop: 12 }}>
+      <div className="tabs-grid">
         {tabs.map((t) => (
           <div
             key={t.id}
@@ -504,9 +486,8 @@ export function TabsSheet() {
       </div>
       <button
         type="button"
-        className="glass-btn accent"
+        className="glass-btn accent tabs-actions"
         data-tour="tour-new-tab"
-        style={{ width: '100%', marginTop: 16, height: 48, borderRadius: 14 }}
         onClick={() => createTab()}
       >
         New Tab

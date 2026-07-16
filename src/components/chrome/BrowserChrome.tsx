@@ -131,7 +131,7 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
   return (
     <div
       className={clsx('controls-row', !inBlob && 'glass glass-blob')}
-      style={inBlob ? undefined : { padding: '6px 8px' }}
+      style={inBlob ? undefined : { padding: '4px 6px' }}
     >
       {c.back && (
         <GlassButton
@@ -346,19 +346,19 @@ export function BrowserChrome() {
 export function useChromeInsets(layout: ChromeLayout) {
   switch (layout) {
     case 'safari':
-      return { top: 78, bottom: 78 }
+      return { top: 64, bottom: 64 }
     case 'quiche-bottom':
-      return { top: 16, bottom: 138 }
+      return { top: 10, bottom: 118 }
     case 'quiche-top':
-      return { top: 138, bottom: 16 }
+      return { top: 118, bottom: 10 }
     case 'inverted':
     case 'controls-top':
-      return { top: 78, bottom: 78 }
+      return { top: 64, bottom: 64 }
     case 'search-only':
-      return { top: 64, bottom: 78 }
+      return { top: 56, bottom: 64 }
     case 'minimal':
-      return { top: 64, bottom: 78 }
+      return { top: 56, bottom: 64 }
     default:
-      return { top: 16, bottom: 138 }
+      return { top: 10, bottom: 118 }
   }
 }

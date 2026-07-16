@@ -80,7 +80,7 @@ export function GamesPage() {
         </button>
       </div>
 
-      <div className="section-label" style={{ marginTop: 8 }}>
+      <div className="section-label" style={{ marginTop: 4 }}>
         Achievements
       </div>
       <div className="achievements-list">
