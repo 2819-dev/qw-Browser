@@ -354,8 +354,8 @@ export type QwSettings = {
   sitesVisited: number
   xp: number
 
-  /** offline extension store */
-  installedExtensions: ExtensionId[]
+  /** installed catalog entry ids (builtin or community) */
+  installedExtensions: string[]
 }
 
 export const DEFAULT_SETTINGS: QwSettings = {

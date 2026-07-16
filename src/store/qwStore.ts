@@ -19,9 +19,12 @@ import {
   type ControlSet,
   type AchievementId,
   type UiFont,
-  type ExtensionId,
   ACHIEVEMENTS,
 } from '../types/customization'
+import {
+  BUILTIN_EXTENSIONS,
+  type CatalogExtension,
+} from '../lib/extensionCatalog'
 
 type Tab = {
   id: string
@@ -46,6 +49,8 @@ type BrowserState = {
   showTour: boolean
   showWelcome: boolean
   resolvedTheme: 'light' | 'dark'
+  /** Approved catalog from API (or builtins). Not persisted. */
+  extensionCatalog: CatalogExtension[]
 
   // settings mutators
   setSetting: <K extends keyof QwSettings>(key: K, value: QwSettings[K]) => void
@@ -69,7 +74,8 @@ type BrowserState = {
   unlockAchievement: (id: AchievementId) => void
   recordSiteVisit: (url: string) => void
   toggleBookmark: (url?: string) => void
-  toggleExtension: (id: ExtensionId) => void
+  toggleExtension: (id: string) => void
+  setExtensionCatalog: (catalog: CatalogExtension[]) => void
   restartTour: () => void
 
   // ui
@@ -142,6 +148,7 @@ export const useQwStore = create<BrowserState>()(
       showTour: false,
       showWelcome: false,
       resolvedTheme: 'dark',
+      extensionCatalog: BUILTIN_EXTENSIONS,
 
       setSetting: (key, value) =>
         set((s) => ({ settings: { ...s.settings, [key]: value } })),
@@ -285,6 +292,8 @@ export const useQwStore = create<BrowserState>()(
         set({ settings: { ...settings, installedExtensions } })
         if (!on) get().unlockAchievement('first-extension')
       },
+
+      setExtensionCatalog: (extensionCatalog) => set({ extensionCatalog }),
 
       setShowSettings: (showSettings) => {
         set({ showSettings })

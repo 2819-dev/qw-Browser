@@ -1,5 +1,6 @@
 import { WALLPAPER_META, type WallpaperId } from '../../types/customization'
 import { useQwStore } from '../../store/qwStore'
+import { hasExtensionEffect } from '../../lib/extensionCatalog'
 import { QwAppIcon } from '../glass/QwAppIcon'
 
 function hostLabel(url: string) {
@@ -18,18 +19,21 @@ const DARK_WALLPAPERS = new Set<WallpaperId>(['aurora', 'orb', 'night', 'mesh'])
 
 export function StartPage() {
   const settings = useQwStore((s) => s.settings)
+  const catalog = useQwStore((s) => s.extensionCatalog)
   const theme = useQwStore((s) => s.resolvedTheme)
   const navigate = useQwStore((s) => s.navigate)
   const wallpaper = WALLPAPER_META[settings.wallpaper]
-  const exts = new Set(settings.installedExtensions)
   const onDarkArt =
     DARK_WALLPAPERS.has(settings.wallpaper) ||
     ((settings.wallpaper === 'none' || settings.wallpaper === 'solid') && theme === 'dark')
 
   const favorites = settings.favoriteShortcuts
-  const showIcon = settings.showQwWordmark && !exts.has('quiet-start')
+  const showIcon =
+    settings.showQwWordmark &&
+    !hasExtensionEffect(settings.installedExtensions, catalog, 'quiet-start')
   const content =
-    exts.has('speed-dial') && settings.startPageContent === 'blank'
+    hasExtensionEffect(settings.installedExtensions, catalog, 'speed-dial') &&
+    settings.startPageContent === 'blank'
       ? 'favorites'
       : settings.startPageContent
 

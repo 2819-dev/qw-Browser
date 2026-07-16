@@ -15,6 +15,7 @@ import clsx from 'clsx'
 import { Glass, GlassButton } from '../glass/Glass'
 import { QwAppIcon } from '../glass/QwAppIcon'
 import { useQwStore } from '../../store/qwStore'
+import { hasExtensionEffect } from '../../lib/extensionCatalog'
 import type { ChromeLayout, SearchBarStyle } from '../../types/customization'
 
 function haptic() {
@@ -50,6 +51,7 @@ export function SearchBar({
   const tab = useQwStore((s) => s.activeTab())
   const navigate = useQwStore((s) => s.navigate)
   const settings = useQwStore((s) => s.settings)
+  const catalog = useQwStore((s) => s.extensionCatalog)
   const theme = useQwStore((s) => s.resolvedTheme)
   const [value, setValue] = useState(displayUrl(tab.url))
 
@@ -75,7 +77,7 @@ export function SearchBar({
       onSubmit={onSubmit}
     >
       {(settings.showHttpsBadge ||
-        settings.installedExtensions.includes('privacy-lock')) &&
+        hasExtensionEffect(settings.installedExtensions, catalog, 'privacy-lock')) &&
         tab.url.startsWith('https') && (
         <Lock size={13} strokeWidth={2.4} color="var(--qw-accent)" />
       )}
@@ -115,9 +117,10 @@ export function SearchBar({
 export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
   const tab = useQwStore((s) => s.activeTab())
   const settings = useQwStore((s) => s.settings)
+  const catalog = useQwStore((s) => s.extensionCatalog)
   const showTour = useQwStore((s) => s.showTour)
   const c = settings.controls
-  const focus = settings.installedExtensions.includes('focus-mode')
+  const focus = hasExtensionEffect(settings.installedExtensions, catalog, 'focus-mode')
   const goBack = useQwStore((s) => s.goBack)
   const goForward = useQwStore((s) => s.goForward)
   const reload = useQwStore((s) => s.reload)

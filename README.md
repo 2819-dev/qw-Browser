@@ -23,10 +23,18 @@ qw is a mobile-first browser shell with real Apple-style **Liquid Glass** UI (pl
 
 ```bash
 npm install
-npm run dev -- --host
+npm run server          # extensions API on :8787 (keep running)
+npm run dev -- --host   # app on :5173 — proxies /api
 ```
 
-On desktop you’ll see an iPhone-sized frame; on a phone it’s full-bleed. Clear site data / use a private window if you need to re-run onboarding (`localStorage` key `qw-browser-v4`).
+Or both together: `npm run dev:full`.
+
+- **Mobile store:** open the app → `qw://extensions` (approved listings only)
+- **Developer portal (computer):** http://localhost:5173/developer — submit, check status, review/approve
+
+Admin review key defaults to `qw-dev` (`QW_ADMIN_KEY` env to override).
+
+On desktop you’ll see an iPhone-sized frame; on a phone it’s full-bleed. Clear site data / use a private window if you need to re-run onboarding (`localStorage` key `qw-browser-v6`).
 
 ## Native (Capacitor)
 

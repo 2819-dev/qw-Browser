@@ -422,7 +422,7 @@ export function SettingsSheet() {
         >
           <div className="label">
             <strong>Extensions</strong>
-            <span>Offline store</span>
+            <span>Online store · submit via /developer</span>
           </div>
           <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
         </button>

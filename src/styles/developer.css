@@ -1,0 +1,305 @@
+.dev-portal {
+  min-height: 100dvh;
+  background: #f4f4f6;
+  color: #1c1c1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Helvetica, Arial,
+    sans-serif;
+  padding: 32px 28px 48px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+[data-theme='dark'] .dev-portal,
+.dev-portal {
+  /* portal stays light — desktop form surface */
+}
+
+.dev-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.dev-kicker {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8e8e93;
+}
+
+.dev-header h1 {
+  margin: 0 0 6px;
+  font-size: 36px;
+  letter-spacing: -0.045em;
+}
+
+.dev-sub {
+  margin: 0;
+  color: #636366;
+  font-size: 15px;
+  line-height: 1.4;
+  max-width: 420px;
+}
+
+.dev-status-pill {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  background: #ffe5e5;
+  color: #c41e1e;
+}
+
+.dev-status-pill[data-on='1'] {
+  background: #e5f8ec;
+  color: #1b7a3d;
+}
+
+.dev-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.dev-tabs button {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #e8e8ed;
+  color: #3a3a3c;
+}
+
+.dev-tabs button.on {
+  background: #1c1c1e;
+  color: #fff;
+}
+
+.dev-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dev-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  padding: 22px 22px 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dev-card h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+}
+
+.dev-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #8e8e93;
+}
+
+.dev-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 650;
+  color: #636366;
+}
+
+.dev-card input,
+.dev-card textarea,
+.dev-card select {
+  font: inherit;
+  font-weight: 400;
+  font-size: 15px;
+  color: #1c1c1e;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fafafa;
+}
+
+.dev-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.dev-row label {
+  flex: 1;
+}
+
+.dev-primary {
+  align-self: flex-start;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #1c1c1e;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.dev-primary:disabled {
+  opacity: 0.45;
+}
+
+.dev-ok {
+  margin: 0;
+  color: #1b7a3d;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dev-err {
+  margin: 0;
+  color: #c41e1e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dev-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.dev-list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f7f7f9;
+}
+
+.dev-list-row.review {
+  align-items: center;
+}
+
+.dev-glyph {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.dev-list-row strong {
+  display: block;
+  font-size: 15px;
+}
+
+.dev-list-row p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #636366;
+  line-height: 1.35;
+}
+
+.dev-meta {
+  font-size: 12px !important;
+  color: #8e8e93 !important;
+}
+
+.dev-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 8px;
+  border-radius: 999px;
+}
+
+.dev-badge.pending {
+  background: #fff3cd;
+  color: #8a6d00;
+}
+
+.dev-badge.approved {
+  background: #e5f8ec;
+  color: #1b7a3d;
+}
+
+.dev-badge.rejected {
+  background: #ffe5e5;
+  color: #c41e1e;
+}
+
+.dev-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.dev-approve,
+.dev-reject {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.dev-approve {
+  background: #1c1c1e;
+  color: #fff;
+}
+
+.dev-reject {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dev-foot {
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #8e8e93;
+}
+
+.dev-foot a {
+  color: #1c1c1e;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .dev-portal {
+    padding: 20px 16px 40px;
+  }
+  .dev-header {
+    flex-direction: column;
+  }
+  .dev-row {
+    flex-direction: column;
+  }
+  .dev-list-row.review {
+    flex-wrap: wrap;
+  }
+  .dev-actions {
+    width: 100%;
+    flex-direction: row;
+    margin-left: 0;
+  }
+}

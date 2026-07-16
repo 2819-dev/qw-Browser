@@ -67,7 +67,7 @@ Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page*
 | Feature | Status | Notes |
 |--------|--------|--------|
 | `qw://games` hub | Done | Offline Reflex / Memory / Pulse + 3D preview teaser |
-| Extension store | Done | `qw://extensions` — Focus, Night Tint, Compact, etc. |
+| Extension store | Done | Online `qw://extensions` + desktop `/developer` submit → approve |
 | Achievements → level / power-ups | Foundation | XP + unlocks already tracked |
 | Visit 100 Sites, etc. | Wired | Unlocks feed future game buffs |
 | Cross-site qw:// deep links | Planned | e.g. `qw://games`, profile badge |
@@ -76,7 +76,6 @@ Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page*
 
 ## Explicit non-goals (for now)
 
-- Desktop browser chrome
-- Extension store
+- Desktop browser chrome (aside from the /developer portal)
 - Account sync
 - Heavy AI chat chrome in the shell

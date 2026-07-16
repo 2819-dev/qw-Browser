@@ -2599,6 +2599,13 @@ button {
   -webkit-overflow-scrolling: touch;
 }
 
+.ext-status-hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--qw-fg-tertiary);
+}
+
 .ext-list {
   display: flex;
   flex-direction: column;

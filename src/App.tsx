@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { resolveAccent, resolveIconSrc, UI_FONTS } from './types/customization'
 import { useQwStore } from './store/qwStore'
+import { hasExtensionEffect, fetchApprovedExtensions, BUILTIN_EXTENSIONS } from './lib/extensionCatalog'
 import { BrowserChrome } from './components/chrome/BrowserChrome'
 import { BrowserView } from './components/chrome/BrowserView'
 import { Onboarding } from './components/onboarding/Onboarding'
@@ -89,6 +90,8 @@ export default function App() {
   useFullscreenShell()
 
   const settings = useQwStore((s) => s.settings)
+  const extensionCatalog = useQwStore((s) => s.extensionCatalog)
+  const setExtensionCatalog = useQwStore((s) => s.setExtensionCatalog)
   const theme = useQwStore((s) => s.resolvedTheme)
   const showOnboarding = useQwStore((s) => s.showOnboarding)
   const showTour = useQwStore((s) => s.showTour)
@@ -96,6 +99,20 @@ export default function App() {
   const showSettings = useQwStore((s) => s.showSettings)
   const showTabs = useQwStore((s) => s.showTabs)
   const showFullGuide = useQwStore((s) => s.showFullGuide)
+
+  useEffect(() => {
+    let cancelled = false
+    fetchApprovedExtensions()
+      .then(({ extensions }) => {
+        if (!cancelled && extensions.length) setExtensionCatalog(extensions)
+      })
+      .catch(() => {
+        if (!cancelled) setExtensionCatalog(BUILTIN_EXTENSIONS)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [setExtensionCatalog])
 
   useEffect(() => {
     const accent = resolveAccent(settings.accent, settings.visualStyle, theme)
@@ -111,15 +128,27 @@ export default function App() {
       '--qw-font',
       UI_FONTS[settings.uiFont]?.stack ?? UI_FONTS.system.stack,
     )
-    const exts = settings.installedExtensions ?? []
-    document.documentElement.dataset.extNight = exts.includes('night-tint') ? '1' : '0'
-    document.documentElement.dataset.extCompact = exts.includes('compact-bar') ? '1' : '0'
+    document.documentElement.dataset.extNight = hasExtensionEffect(
+      settings.installedExtensions,
+      extensionCatalog,
+      'night-tint',
+    )
+      ? '1'
+      : '0'
+    document.documentElement.dataset.extCompact = hasExtensionEffect(
+      settings.installedExtensions,
+      extensionCatalog,
+      'compact-bar',
+    )
+      ? '1'
+      : '0'
   }, [
     settings.accent,
     settings.glassIntensity,
     settings.visualStyle,
     settings.uiFont,
     settings.installedExtensions,
+    extensionCatalog,
     theme,
   ])
 
@@ -130,7 +159,7 @@ export default function App() {
           <div className="glass-atmosphere" aria-hidden />
           <BrowserView />
           <BrowserChrome />
-          {settings.installedExtensions?.includes('night-tint') && (
+          {hasExtensionEffect(settings.installedExtensions, extensionCatalog, 'night-tint') && (
             <div className="night-tint-overlay" aria-hidden />
           )}
           {showSettings && <SettingsSheet />}
