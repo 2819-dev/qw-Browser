@@ -84,7 +84,7 @@ export function WelcomeCeremony() {
           </button>
         </div>
         <p className="welcome-foot">
-          qw://games is coming soon — keep exploring to build XP for launch.
+          Play offline at qw://games · extend qw at qw://extensions
         </p>
       </div>
     </div>

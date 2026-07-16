@@ -111,11 +111,15 @@ export default function App() {
       '--qw-font',
       UI_FONTS[settings.uiFont]?.stack ?? UI_FONTS.system.stack,
     )
+    const exts = settings.installedExtensions ?? []
+    document.documentElement.dataset.extNight = exts.includes('night-tint') ? '1' : '0'
+    document.documentElement.dataset.extCompact = exts.includes('compact-bar') ? '1' : '0'
   }, [
     settings.accent,
     settings.glassIntensity,
     settings.visualStyle,
     settings.uiFont,
+    settings.installedExtensions,
     theme,
   ])
 
@@ -126,6 +130,9 @@ export default function App() {
           <div className="glass-atmosphere" aria-hidden />
           <BrowserView />
           <BrowserChrome />
+          {settings.installedExtensions?.includes('night-tint') && (
+            <div className="night-tint-overlay" aria-hidden />
+          )}
           {showSettings && <SettingsSheet />}
           {showTabs && <TabsSheet />}
           {showFullGuide && <FullCustomizationGuide />}

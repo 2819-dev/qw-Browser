@@ -359,8 +359,8 @@ button {
   z-index: 1;
   overflow: hidden;
   background: transparent;
-  --qw-clear-top: calc(6px + var(--qw-safe-top));
-  --qw-clear-bottom: calc(102px + var(--qw-safe-bottom));
+  --qw-clear-top: calc(8px + var(--qw-safe-top));
+  --qw-clear-bottom: calc(112px + var(--qw-safe-bottom));
 }
 
 .browser-page {
@@ -2523,8 +2523,145 @@ button {
   border: 1px solid var(--qw-hairline);
 }
 
-.games-entry:active {
+[data-ext-compact='1'] .chrome-bottom {
+  padding-bottom: calc(var(--qw-safe-bottom) + 4px);
+}
+
+[data-ext-compact='1'] .unified-blob {
+  padding: 4px;
+  gap: 1px;
+}
+
+.night-tint-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  background: rgba(255, 140, 60, 0.12);
+  mix-blend-mode: multiply;
+}
+
+[data-theme='dark'] .night-tint-overlay {
+  background: rgba(255, 150, 70, 0.1);
+  mix-blend-mode: soft-light;
+}
+
+.start-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.games-entry {
+  margin-top: 0;
+}
+
+.games-preview-mini {
+  flex: 0 0 auto;
+  min-height: 140px;
+  height: 140px;
+  margin-top: 4px;
+}
+
+.qw-not-found {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px;
+  text-align: center;
+}
+
+.qw-not-found h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.qw-not-found p {
+  margin: 0;
+  color: var(--qw-fg-secondary);
+  font-size: 13px;
+}
+
+/* Extension store */
+.ext-page {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 10px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ext-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ext-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  text-align: left;
+}
+
+.ext-card.on {
+  border-color: var(--qw-fg);
+}
+
+.ext-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: color-mix(in srgb, var(--qw-fg) 6%, transparent);
+  flex-shrink: 0;
+}
+
+.ext-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ext-copy strong {
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.ext-copy span {
+  font-size: 12px;
+  color: var(--qw-fg-secondary);
+  line-height: 1.35;
+}
+
+.ext-toggle {
+  flex-shrink: 0;
+  min-width: 52px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 650;
+  background: color-mix(in srgb, var(--qw-fg) 8%, transparent);
   color: var(--qw-fg);
+}
+
+.ext-toggle.on {
+  background: var(--qw-fg);
+  color: var(--qw-bg);
 }
 
 /* Coming soon / preview advertisement */

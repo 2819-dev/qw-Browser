@@ -66,7 +66,8 @@ Flow: **Onboarding → Guide (tour) → Finish → Welcome badge → Start page*
 
 | Feature | Status | Notes |
 |--------|--------|--------|
-| `qw://games` hub | Preview | Coming soon 3D teaser + Preview hex badge |
+| `qw://games` hub | Done | Offline Reflex / Memory / Pulse + 3D preview teaser |
+| Extension store | Done | `qw://extensions` — Focus, Night Tint, Compact, etc. |
 | Achievements → level / power-ups | Foundation | XP + unlocks already tracked |
 | Visit 100 Sites, etc. | Wired | Unlocks feed future game buffs |
 | Cross-site qw:// deep links | Planned | e.g. `qw://games`, profile badge |

@@ -169,6 +169,8 @@ export type AchievementId =
   | 'gamer'
   | 'reflex-pro'
   | 'memory-master'
+  | 'store-visited'
+  | 'first-extension'
 
 export type AchievementDef = {
   id: AchievementId
@@ -232,16 +234,83 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Cleared Memory in under 40 moves',
     xp: 80,
   },
+  {
+    id: 'store-visited',
+    title: 'Store Scout',
+    description: 'Opened the extension store',
+    xp: 25,
+  },
+  {
+    id: 'first-extension',
+    title: 'Extended',
+    description: 'Installed your first extension',
+    xp: 40,
+  },
+]
+
+export type ExtensionId =
+  | 'focus-mode'
+  | 'night-tint'
+  | 'compact-bar'
+  | 'speed-dial'
+  | 'privacy-lock'
+  | 'quiet-start'
+
+export type ExtensionDef = {
+  id: ExtensionId
+  title: string
+  description: string
+  glyph: string
+}
+
+export const EXTENSION_CATALOG: ExtensionDef[] = [
+  {
+    id: 'focus-mode',
+    title: 'Focus',
+    description: 'Hide share & bookmark buttons while browsing',
+    glyph: '◎',
+  },
+  {
+    id: 'night-tint',
+    title: 'Night Tint',
+    description: 'Warm amber wash over pages after dark',
+    glyph: '☾',
+  },
+  {
+    id: 'compact-bar',
+    title: 'Compact Bar',
+    description: 'Tighter chrome padding on the bottom bar',
+    glyph: '═',
+  },
+  {
+    id: 'speed-dial',
+    title: 'Speed Dial',
+    description: 'Force favorites on the start page',
+    glyph: '⌘',
+  },
+  {
+    id: 'privacy-lock',
+    title: 'Privacy Lock',
+    description: 'Always show the HTTPS lock badge',
+    glyph: '⌀',
+  },
+  {
+    id: 'quiet-start',
+    title: 'Quiet Start',
+    description: 'Hide the big app icon on start',
+    glyph: '·',
+  },
 ]
 
 export function isQwInternal(url: string) {
-  return url === 'qw://start' || url === 'qw://games' || url.startsWith('qw://')
+  return url.startsWith('qw://')
 }
 
 export function titleForQwUrl(url: string) {
   if (url === 'qw://start') return 'Start'
   if (url === 'qw://games') return 'Games'
-  if (url.startsWith('qw://')) return url.replace('qw://', '')
+  if (url === 'qw://extensions') return 'Extensions'
+  if (url.startsWith('qw://')) return url.replace('qw://', '') || 'qw'
   return 'New Tab'
 }
 
@@ -284,6 +353,9 @@ export type QwSettings = {
   unlockedAchievements: AchievementId[]
   sitesVisited: number
   xp: number
+
+  /** offline extension store */
+  installedExtensions: ExtensionId[]
 }
 
 export const DEFAULT_SETTINGS: QwSettings = {
@@ -333,6 +405,7 @@ export const DEFAULT_SETTINGS: QwSettings = {
   unlockedAchievements: [],
   sitesVisited: 0,
   xp: 0,
+  installedExtensions: [],
 }
 
 export const ACCENT_COLORS: Record<AccentName, string> = {

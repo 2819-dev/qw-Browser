@@ -74,7 +74,9 @@ export function SearchBar({
       data-tour="tour-search"
       onSubmit={onSubmit}
     >
-      {settings.showHttpsBadge && tab.url.startsWith('https') && (
+      {(settings.showHttpsBadge ||
+        settings.installedExtensions.includes('privacy-lock')) &&
+        tab.url.startsWith('https') && (
         <Lock size={13} strokeWidth={2.4} color="var(--qw-accent)" />
       )}
       {tab.url === 'qw://start' && !value && (
@@ -115,6 +117,7 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
   const settings = useQwStore((s) => s.settings)
   const showTour = useQwStore((s) => s.showTour)
   const c = settings.controls
+  const focus = settings.installedExtensions.includes('focus-mode')
   const goBack = useQwStore((s) => s.goBack)
   const goForward = useQwStore((s) => s.goForward)
   const reload = useQwStore((s) => s.reload)
@@ -164,7 +167,7 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
         </GlassButton>
       )}
       <div className="spacer" />
-      {c.bookmarks && (
+      {c.bookmarks && !focus && (
         <GlassButton
           aria-label="Bookmark"
           onClick={() => {
@@ -184,7 +187,7 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
           />
         </GlassButton>
       )}
-      {c.share && (
+      {c.share && !focus && (
         <GlassButton
           aria-label="Share"
           onClick={() => {
@@ -354,12 +357,12 @@ export function useChromeInsets(layout: ChromeLayout) {
  */
 export function chromeClearance(layout: ChromeLayout): { top: string; bottom: string } {
   // Chrome body heights (edge + control surface), safe-area added once
-  const bottomBlob = 'calc(102px + var(--qw-safe-bottom))'
-  const topBlob = 'calc(102px + var(--qw-safe-top))'
-  const singleBar = 'calc(54px + var(--qw-safe-bottom))'
-  const singleBarTop = 'calc(54px + var(--qw-safe-top))'
-  const statusOnly = 'calc(6px + var(--qw-safe-top))'
-  const homeOnly = 'calc(6px + var(--qw-safe-bottom))'
+  const bottomBlob = 'calc(112px + var(--qw-safe-bottom))'
+  const topBlob = 'calc(112px + var(--qw-safe-top))'
+  const singleBar = 'calc(56px + var(--qw-safe-bottom))'
+  const singleBarTop = 'calc(56px + var(--qw-safe-top))'
+  const statusOnly = 'calc(8px + var(--qw-safe-top))'
+  const homeOnly = 'calc(8px + var(--qw-safe-bottom))'
 
   switch (layout) {
     case 'safari':

@@ -19,6 +19,7 @@ import {
   type ControlSet,
   type AchievementId,
   type UiFont,
+  type ExtensionId,
   ACHIEVEMENTS,
 } from '../types/customization'
 
@@ -68,6 +69,7 @@ type BrowserState = {
   unlockAchievement: (id: AchievementId) => void
   recordSiteVisit: (url: string) => void
   toggleBookmark: (url?: string) => void
+  toggleExtension: (id: ExtensionId) => void
   restartTour: () => void
 
   // ui
@@ -275,6 +277,15 @@ export const useQwStore = create<BrowserState>()(
         })
       },
 
+      toggleExtension: (id) => {
+        const { settings } = get()
+        const list = settings.installedExtensions ?? []
+        const on = list.includes(id)
+        const installedExtensions = on ? list.filter((x) => x !== id) : [...list, id]
+        set({ settings: { ...settings, installedExtensions } })
+        if (!on) get().unlockAchievement('first-extension')
+      },
+
       setShowSettings: (showSettings) => {
         set({ showSettings })
         if (showSettings) get().unlockAchievement('customizer')
@@ -435,7 +446,7 @@ export const useQwStore = create<BrowserState>()(
       },
     }),
     {
-      name: 'qw-browser-v5',
+      name: 'qw-browser-v6',
       partialize: (s) => ({
         settings: s.settings,
       }),
@@ -454,6 +465,7 @@ export const useQwStore = create<BrowserState>()(
           state.settings.unlockedAchievements ??= []
           state.settings.sitesVisited ??= 0
           state.settings.xp ??= 0
+          state.settings.installedExtensions ??= []
           state.settings.tourComplete ??= false
           state.settings.welcomeSeen ??= false
           state.settings.controls = {

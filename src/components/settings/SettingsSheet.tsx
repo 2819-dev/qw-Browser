@@ -396,6 +396,38 @@ export function SettingsSheet() {
         </div>
       </div>
 
+      <div className="section-label">qw://</div>
+      <div className="settings-group">
+        <button
+          type="button"
+          className="settings-row"
+          onClick={() => {
+            setShowSettings(false)
+            useQwStore.getState().navigate('qw://games')
+          }}
+        >
+          <div className="label">
+            <strong>Games</strong>
+            <span>Offline Reflex, Memory, Pulse</span>
+          </div>
+          <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
+        </button>
+        <button
+          type="button"
+          className="settings-row"
+          onClick={() => {
+            setShowSettings(false)
+            useQwStore.getState().navigate('qw://extensions')
+          }}
+        >
+          <div className="label">
+            <strong>Extensions</strong>
+            <span>Offline store</span>
+          </div>
+          <ChevronRight size={16} color="var(--qw-fg-tertiary)" />
+        </button>
+      </div>
+
       <div className="section-label">Achievements</div>
       <div className="achievements-list">
         {ACHIEVEMENTS.map((a) => {

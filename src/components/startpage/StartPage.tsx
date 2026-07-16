@@ -21,11 +21,17 @@ export function StartPage() {
   const theme = useQwStore((s) => s.resolvedTheme)
   const navigate = useQwStore((s) => s.navigate)
   const wallpaper = WALLPAPER_META[settings.wallpaper]
+  const exts = new Set(settings.installedExtensions)
   const onDarkArt =
     DARK_WALLPAPERS.has(settings.wallpaper) ||
     ((settings.wallpaper === 'none' || settings.wallpaper === 'solid') && theme === 'dark')
 
   const favorites = settings.favoriteShortcuts
+  const showIcon = settings.showQwWordmark && !exts.has('quiet-start')
+  const content =
+    exts.has('speed-dial') && settings.startPageContent === 'blank'
+      ? 'favorites'
+      : settings.startPageContent
 
   return (
     <div
@@ -35,22 +41,22 @@ export function StartPage() {
         background: settings.wallpaper === 'none' ? undefined : wallpaper.css,
       }}
     >
-      {settings.showQwWordmark && settings.startPageContent !== 'wallpaper-only' && (
+      {showIcon && content !== 'wallpaper-only' && (
         <div className="brand-mark">
           <QwAppIcon
             variant={settings.appIcon}
             theme={theme}
-            size={72}
+            size={64}
             className="brand-app-icon"
             alt="qw"
           />
         </div>
       )}
 
-      {settings.startPageContent === 'favorites' && (
+      {content === 'favorites' && (
         <div className="favorites">
           {favorites.length === 0 ? (
-            <p className="empty-hint quiet">Your shortcuts will show up here</p>
+            <p className="empty-hint quiet">Bookmarks appear here</p>
           ) : (
             favorites.map((url) => (
               <button key={url} className="favorite" type="button" onClick={() => navigate(url)}>
@@ -62,19 +68,16 @@ export function StartPage() {
         </div>
       )}
 
-      {settings.startPageContent === 'suggestions' && (
-        <p className="empty-hint quiet">Start typing to search</p>
-      )}
+      {content === 'suggestions' && <p className="empty-hint quiet">Start typing to search</p>}
 
-      {settings.startPageContent === 'blank' && null}
-
-      <button
-        type="button"
-        className="games-entry"
-        onClick={() => navigate('qw://games')}
-      >
-        qw://games
-      </button>
+      <div className="start-links">
+        <button type="button" className="games-entry" onClick={() => navigate('qw://games')}>
+          games
+        </button>
+        <button type="button" className="games-entry" onClick={() => navigate('qw://extensions')}>
+          extensions
+        </button>
+      </div>
     </div>
   )
 }
@@ -90,7 +93,7 @@ export function LoadingOverlay() {
     <div className="loading-overlay" aria-hidden>
       {icon === 'qw' && (
         <div className="loader-app-icon">
-          <QwAppIcon variant={appIcon} theme={theme} size={40} alt="" />
+          <QwAppIcon variant={appIcon} theme={theme} size={36} alt="" />
         </div>
       )}
       {icon === 'spinner' && <div className="loader-spinner" />}

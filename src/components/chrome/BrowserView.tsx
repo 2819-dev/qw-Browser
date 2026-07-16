@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { StartPage, LoadingOverlay } from '../startpage/StartPage'
 import { GamesPage } from '../games/GamesPage'
+import { ExtensionsPage } from '../extensions/ExtensionsPage'
 import { useQwStore } from '../../store/qwStore'
 import { chromeClearance } from '../chrome/BrowserChrome'
 import { isQwInternal } from '../../types/customization'
@@ -21,7 +22,9 @@ export function BrowserView() {
 
   const isStart = tab.url === 'qw://start'
   const isGames = tab.url === 'qw://games'
+  const isExtensions = tab.url === 'qw://extensions'
   const isInternal = isQwInternal(tab.url)
+  const isKnownInternal = isStart || isGames || isExtensions
 
   const iframeSrc = useMemo(() => {
     if (isInternal) return null
@@ -33,9 +36,9 @@ export function BrowserView() {
       className="browser-content"
       style={
         {
-          ['--qw-clear-top' as string]: clearance.top,
-          ['--qw-clear-bottom' as string]: clearance.bottom,
-        } as React.CSSProperties
+          '--qw-clear-top': clearance.top,
+          '--qw-clear-bottom': clearance.bottom,
+        } as CSSProperties
       }
     >
       <div className="browser-page">
@@ -43,6 +46,14 @@ export function BrowserView() {
           <StartPage />
         ) : isGames ? (
           <GamesPage />
+        ) : isExtensions ? (
+          <ExtensionsPage />
+        ) : isInternal && !isKnownInternal ? (
+          <div className="qw-not-found">
+            <p className="games-kicker">{tab.url}</p>
+            <h1>Not found</h1>
+            <p>Try qw://start, qw://games, or qw://extensions</p>
+          </div>
         ) : (
           <>
             {iframeSrc && (
