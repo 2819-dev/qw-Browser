@@ -194,13 +194,16 @@ export const useQwStore = create<BrowserState>()(
       setStartPageContent: (startPageContent) =>
         set((s) => ({ settings: { ...s.settings, startPageContent } })),
 
-      setControl: (key, value) =>
+      setControl: (key, value) => {
+        // Settings must always stay available
+        if (key === 'settings') return
         set((s) => ({
           settings: {
             ...s.settings,
             controls: { ...s.settings.controls, [key]: value },
           },
-        })),
+        }))
+      },
 
       completeOnboarding: () =>
         set((s) => ({
@@ -453,6 +456,10 @@ export const useQwStore = create<BrowserState>()(
           state.settings.xp ??= 0
           state.settings.tourComplete ??= false
           state.settings.welcomeSeen ??= false
+          state.settings.controls = {
+            ...state.settings.controls,
+            settings: true,
+          }
           state.showOnboarding = !state.settings.onboardingComplete
           state.showTour =
             state.settings.onboardingComplete && !state.settings.tourComplete

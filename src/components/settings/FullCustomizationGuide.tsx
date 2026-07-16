@@ -227,21 +227,23 @@ export function FullCustomizationGuide() {
 
       {current.id === 'controls' && (
         <div className="settings-group">
-          {(Object.keys(settings.controls) as (keyof typeof settings.controls)[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              className="settings-row"
-              onClick={() => setControl(key, !settings.controls[key])}
-            >
-              <div className="label">
-                <strong style={{ textTransform: 'capitalize' }}>{key}</strong>
-              </div>
-              <span style={{ color: 'var(--qw-accent)', fontWeight: 600, fontSize: 13 }}>
-                {settings.controls[key] ? 'On' : 'Off'}
-              </span>
-            </button>
-          ))}
+          {(Object.keys(settings.controls) as (keyof typeof settings.controls)[])
+            .filter((key) => key !== 'settings')
+            .map((key) => (
+              <button
+                key={key}
+                type="button"
+                className="settings-row"
+                onClick={() => setControl(key, !settings.controls[key])}
+              >
+                <div className="label">
+                  <strong style={{ textTransform: 'capitalize' }}>{key}</strong>
+                </div>
+                <span style={{ color: 'var(--qw-accent)', fontWeight: 600, fontSize: 13 }}>
+                  {settings.controls[key] ? 'On' : 'Off'}
+                </span>
+              </button>
+            ))}
         </div>
       )}
 

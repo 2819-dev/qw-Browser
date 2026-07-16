@@ -172,15 +172,22 @@ export function SettingsSheet() {
 
       <div className="section-label">Buttons</div>
       <div className="settings-group">
-        {(Object.keys(settings.controls) as (keyof typeof settings.controls)[]).map((key) => (
-          <div key={key} className="settings-row">
-            <div className="label">
-              <strong style={{ textTransform: 'capitalize' }}>{key}</strong>
+        {(
+          Object.keys(settings.controls) as (keyof typeof settings.controls)[]
+        )
+          .filter((key) => key !== 'settings')
+          .map((key) => (
+            <div key={key} className="settings-row">
+              <div className="label">
+                <strong style={{ textTransform: 'capitalize' }}>{key}</strong>
+              </div>
+              <Toggle on={settings.controls[key]} onChange={(v) => setControl(key, v)} label={key} />
             </div>
-            <Toggle on={settings.controls[key]} onChange={(v) => setControl(key, v)} label={key} />
-          </div>
-        ))}
+          ))}
       </div>
+      <p className="muted-note" style={{ marginTop: 8 }}>
+        Settings stays on the bar so you can always customize qw.
+      </p>
 
       <div className="section-label">Appearance</div>
       <div className="settings-group">

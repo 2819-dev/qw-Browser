@@ -209,15 +209,13 @@ export function ControlsBar({ inBlob }: { inBlob?: boolean }) {
           </span>
         </GlassButton>
       )}
-      {c.settings && (
-        <GlassButton
-          aria-label="Settings"
-          data-tour="tour-settings"
-          onClick={press(() => setShowSettings(true))}
-        >
-          <Settings size={18} strokeWidth={2.1} />
-        </GlassButton>
-      )}
+      <GlassButton
+        aria-label="Settings"
+        data-tour="tour-settings"
+        onClick={press(() => setShowSettings(true))}
+      >
+        <Settings size={18} strokeWidth={2.1} />
+      </GlassButton>
     </div>
   )
 }
@@ -240,9 +238,7 @@ function QuietAccess() {
   const tabs = useQwStore((s) => s.tabs)
   const settings = useQwStore((s) => s.settings)
   const showTabs = settings.controls.tabs
-  const showSettingsBtn = settings.controls.settings
-  if (!showTabs && !showSettingsBtn) return null
-
+  // Settings is always available
   return (
     <div className="chrome-layer chrome-top quiet-access">
       <Glass className="glass-pill quiet-pill">
@@ -261,18 +257,16 @@ function QuietAccess() {
             </span>
           </GlassButton>
         )}
-        {showSettingsBtn && (
-          <GlassButton
-            aria-label="Settings"
-            data-tour="tour-settings"
-            onClick={() => {
-              haptic()
-              setShowSettings(true)
-            }}
-          >
-            <Settings size={18} strokeWidth={2.1} />
-          </GlassButton>
-        )}
+        <GlassButton
+          aria-label="Settings"
+          data-tour="tour-settings"
+          onClick={() => {
+            haptic()
+            setShowSettings(true)
+          }}
+        >
+          <Settings size={18} strokeWidth={2.1} />
+        </GlassButton>
       </Glass>
     </div>
   )
